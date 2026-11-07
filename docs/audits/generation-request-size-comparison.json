@@ -1,0 +1,119 @@
+{
+  "basis": "Offline reconstruction from retained public research, not a captured live request. No Gemini calls.",
+  "baseline": {
+    "inputSha256": "7c38ef5b41ae64406ecf2f8dfaf2dba841c2518cddabcc7b6bbeb44bc7e3e98c",
+    "format": "generation-request-metrics-v1",
+    "sourceCount": 3,
+    "excerptCount": 20,
+    "evidenceManifestSha256": "551da584786ac32aaa0b482031decae9c35fa9b929772f30f1f5338fa5393633",
+    "systemInstructionBytes": 7565,
+    "contentBytes": 26283,
+    "schemaBytes": 6431,
+    "estimatedRestBodyBytes": 42045,
+    "roughInputTokens": 10059,
+    "tokenMethod": "characters / 4; not a measured Gemini token count",
+    "quotationCharacters": 4873,
+    "originalContextCharacters": 14192,
+    "topicSignals": [
+      {
+        "stage": "App registration",
+        "present": true
+      },
+      {
+        "stage": "OAuth configuration",
+        "present": true
+      },
+      {
+        "stage": "Client credentials",
+        "present": true
+      },
+      {
+        "stage": "Scopes",
+        "present": true
+      },
+      {
+        "stage": "Redirect URLs",
+        "present": true
+      },
+      {
+        "stage": "Authorization",
+        "present": true
+      },
+      {
+        "stage": "Token exchange",
+        "present": true
+      },
+      {
+        "stage": "Token renewal",
+        "present": true
+      },
+      {
+        "stage": "Distribution / approval",
+        "present": true
+      }
+    ],
+    "instructionsSha256": "354d4a27707c32ef9bb31b65ed611e64f1a276d886d0ff6b29134c0777048e59",
+    "schemaSha256": "01ab391bb5451c35c8ab201e39a3bf720730c9ef223599ae97826741e1935cd9"
+  },
+  "optimized": {
+    "inputSha256": "7c38ef5b41ae64406ecf2f8dfaf2dba841c2518cddabcc7b6bbeb44bc7e3e98c",
+    "format": "generation-request-metrics-v1",
+    "sourceCount": 3,
+    "excerptCount": 20,
+    "evidenceManifestSha256": "551da584786ac32aaa0b482031decae9c35fa9b929772f30f1f5338fa5393633",
+    "systemInstructionBytes": 4705,
+    "contentBytes": 19920,
+    "schemaBytes": 6431,
+    "estimatedRestBodyBytes": 32187,
+    "roughInputTokens": 7753,
+    "tokenMethod": "characters / 4; not a measured Gemini token count",
+    "quotationCharacters": 4873,
+    "originalContextCharacters": 14192,
+    "topicSignals": [
+      {
+        "stage": "App registration",
+        "present": true
+      },
+      {
+        "stage": "OAuth configuration",
+        "present": true
+      },
+      {
+        "stage": "Client credentials",
+        "present": true
+      },
+      {
+        "stage": "Scopes",
+        "present": true
+      },
+      {
+        "stage": "Redirect URLs",
+        "present": true
+      },
+      {
+        "stage": "Authorization",
+        "present": true
+      },
+      {
+        "stage": "Token exchange",
+        "present": true
+      },
+      {
+        "stage": "Token renewal",
+        "present": true
+      },
+      {
+        "stage": "Distribution / approval",
+        "present": true
+      }
+    ],
+    "instructionsSha256": "2053d92638e978b48453d98231b10127882df9eb24457587ddd441a2e9359647",
+    "schemaSha256": "01ab391bb5451c35c8ab201e39a3bf720730c9ef223599ae97826741e1935cd9"
+  },
+  "estimatedBodyReductionBytes": 9858,
+  "estimatedBodyReductionPercent": 23.45,
+  "inputAndEvidenceIdentical": true,
+  "schemaIdentical": true,
+  "topicSignalsIdentical": true,
+  "recordedHistoricalTokenUsageAvailable": false
+}

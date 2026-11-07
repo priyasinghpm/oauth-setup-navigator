@@ -1,0 +1,22 @@
+{
+  "provenance": {
+    "kind": "cached-research-excerpt",
+    "snapshot": "pipedrive-pattern-research.json",
+    "note": "Exact retained token-exchange encoding excerpt; not generated or rewritten."
+  },
+  "excerpt": {
+    "id": "evidence-f9dc355fdfc1eab4c1d2eae3",
+    "sourceId": "source-e7f6d7645904e9b7",
+    "sourceUrl": "https://pipedrive.readme.io/docs/marketplace-oauth-authorization",
+    "sourceTitle": "OAuth authorization",
+    "quote": "The content-type for the request must be `application/x-www-form-urlencoded`.",
+    "contextBefore": "ess and refresh tokens. Using an access token, you can access the user\u2019s data.\n\n<Callout icon=\"\ud83d\udea7\" theme=\"warn\">\n  Note that the `authorization_code` expires in **5 minutes**.\n</Callout>\n\nTo exchange the `authorization_code` for the tokens, you must execute this HTTP request to the OAuth server:\n\n```text URL\nPOST https://oauth.pipedrive.com/oauth/token\n```\n\n",
+    "contextAfter": "\n\nTo execute the request, your request **has** to be authenticated via HTTP Basic Auth with the values of the `client_id` and the `client_secret` (you can find the values like [this](https://pipedrive.readme.io/docs/client-id-and-client-secret#how-to-get-your-client_id-and-client_secret)).\n\n| Header parameter | Description                                    ",
+    "sectionHeading": "## Step 4 and Step 5: Getting the tokens",
+    "startOffset": 7204,
+    "endOffset": 7281,
+    "clipped": false,
+    "extractionVersion": "blocks-v3",
+    "kind": "paragraph"
+  }
+}

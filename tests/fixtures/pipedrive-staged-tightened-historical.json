@@ -1,0 +1,72 @@
+{
+  "provenance": {
+    "requestId": "1ac19304-5d4b-4d06-abf9-c8f760c66348",
+    "kind": "historical-live-model-output",
+    "note": "Unmodified section from the second staged live diagnostic. Failed validation; not approved guide content."
+  },
+  "section": {
+    "steps": [
+      {
+        "title": "Request Authorization",
+        "description": "Authorize a user by redirecting them to the Pipedrive OAuth authorization page using GET https://oauth.pipedrive.com/oauth/authorize?client_id=b4d083d9216986345b32&state=148aHxbdd92&redirect_uri=https://awesomeapp.com/oauth/callback. This step is necessary to implement only when you allow app installation outside of the Marketplace.",
+        "expectedOutcome": "The customer's web browser makes a request to the OAuth server's /authorize endpoint.",
+        "evidence": {
+          "status": "documented",
+          "evidenceIds": [
+            "e3",
+            "e9"
+          ],
+          "qualification": "Directly supported by the instructions and example URL for requesting authorization when allowing app installation outside of the Marketplace."
+        }
+      },
+      {
+        "title": "Handle Callback and Receive Authorization Code",
+        "description": "Receive the authorization code at the registered redirect_uri callback URL if it matches with the value you entered in the registration form when a user approves the app install.",
+        "expectedOutcome": "The authorization code is sent to that callback URL.",
+        "evidence": {
+          "status": "documented",
+          "evidenceIds": [
+            "e21"
+          ],
+          "qualification": "Directly supported by the callback explanation regarding matching redirect_uri and receiving the authorization code."
+        }
+      },
+      {
+        "title": "Exchange Authorization Code for Tokens",
+        "description": "Execute a POST request to https://oauth.pipedrive.com/oauth/token with grant_type authorization_code, code, and redirect_uri parameters.",
+        "expectedOutcome": "Receive a response containing access and refresh tokens.",
+        "evidence": {
+          "status": "documented",
+          "evidenceIds": [
+            "e22",
+            "e24"
+          ],
+          "qualification": "Directly supported by the token request endpoint and required body parameters for grant_type, code, and redirect_uri."
+        }
+      },
+      {
+        "title": "Client Authentication and Request Encoding",
+        "description": "Authenticate the token request via HTTP Basic Auth with the values of the client_id and the client_secret, and set the content-type for the request to application/x-www-form-urlencoded.",
+        "expectedOutcome": "The request is successfully authenticated and encoded for token exchange.",
+        "evidence": {
+          "status": "documented",
+          "evidenceIds": [
+            "e23"
+          ],
+          "qualification": "Directly supported by the instructions requiring HTTP Basic Auth with client_id and client_secret and application/x-www-form-urlencoded content-type."
+        }
+      }
+    ],
+    "gaps": [
+      {
+        "topic": "token-response",
+        "text": "Exact structure and full list of fields in the JSON token response body besides access_token are not fully detailed in the provided excerpts.",
+        "evidence": {
+          "status": "unknown",
+          "evidenceIds": [],
+          "qualification": "The provided context cuts off right after introducing access_token, lacking the full response schema."
+        }
+      }
+    ]
+  }
+}

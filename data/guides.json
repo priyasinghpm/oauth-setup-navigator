@@ -1,0 +1,1002 @@
+[
+  {
+    "slug": "google-calendar",
+    "name": "Google Calendar",
+    "category": "Calendar & scheduling",
+    "mark": "31",
+    "summary": "Navigate Google Cloud projects, consent configuration, and Calendar permissions.",
+    "keywords": [
+      "google",
+      "calendar",
+      "events",
+      "workspace",
+      "consent",
+      "cloud"
+    ],
+    "verificationStatus": "source-backed",
+    "oauthTestStatus": "not-tested",
+    "lastResearchedAt": "2026-11-01",
+    "difficulty": {
+      "level": "Moderate",
+      "explanation": "Cloud configuration is straightforward; audience selection, least-privilege scopes, and production verification add decisions.",
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [],
+        "qualification": "Editorial assessment of configuration decisions and permission complexity; not a provider rating."
+      }
+    },
+    "setupEstimate": {
+      "minMinutes": 25,
+      "maxMinutes": 50,
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [],
+        "qualification": "Editorial estimate for registration and configuration with existing accounts and permissions. Excludes callback implementation, OAuth testing, policy preparation, and external review. Not measured."
+      }
+    },
+    "sources": [
+      {
+        "id": "google-quickstart",
+        "title": "Calendar JavaScript quickstart",
+        "url": "https://developers.google.com/workspace/calendar/api/quickstart/js",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "google-scopes",
+        "title": "Calendar authorization and scopes",
+        "url": "https://developers.google.com/workspace/calendar/api/auth",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "google-consent",
+        "title": "Configure OAuth consent",
+        "url": "https://developers.google.com/workspace/guides/configure-oauth-consent",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "google-web",
+        "title": "OAuth for web-server applications",
+        "url": "https://developers.google.com/identity/protocols/oauth2/web-server",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "google-verification",
+        "title": "Sensitive scope verification",
+        "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "google-events",
+        "title": "Calendar events.list reference",
+        "url": "https://developers.google.com/workspace/calendar/api/v3/reference/events/list",
+        "inspectedAt": "2026-11-01"
+      }
+    ],
+    "approvalSummary": {
+      "text": "Public sensitive-scope access generally needs Google verification unless an exception applies. Registration alone is not verification.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "google-verification"
+        ]
+      }
+    },
+    "approvalWaitingTime": {
+      "text": "Google says sensitive-scope verification can take up to 10 days. This is guidance for that review, not a guaranteed launch date or a total for other reviews.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "google-verification"
+        ]
+      }
+    },
+    "prerequisites": [
+      {
+        "text": "A Google account with Calendar enabled and a Google Cloud project.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-quickstart"
+          ]
+        }
+      },
+      {
+        "text": "Permission to configure the project, plus an application name, support contact, and callback URL.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Preparation checklist inferred from the documented configuration steps; confirm project permissions with its owner."
+        }
+      }
+    ],
+    "steps": [
+      {
+        "title": "Enable Calendar API",
+        "description": "In your chosen Cloud project, enable the Google Calendar API.",
+        "expectedOutcome": "The API is enabled in that project.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-quickstart"
+          ]
+        }
+      },
+      {
+        "title": "Configure consent and audience",
+        "description": "Open Google Auth Platform → Branding. Set app and contact details; select the appropriate Audience. Internal is for a Google Workspace organization; use External for outside users. In testing, add intended test users.",
+        "expectedOutcome": "Branding, audience, and test users match your intended access.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-consent"
+          ]
+        }
+      },
+      {
+        "title": "Choose scopes",
+        "description": "In Data Access, select only the Calendar permissions your feature needs. Compare the examples below with the methods you will call.",
+        "expectedOutcome": "You have a least-privilege permission list.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-scopes"
+          ]
+        }
+      },
+      {
+        "title": "Create the web client",
+        "description": "Open Google Auth Platform → Clients → Create Client → Web application. Register the callback under authorized redirect URIs. Save the client ID and secret securely at creation; keep the secret off the frontend and out of source control.",
+        "expectedOutcome": "A web client exists with credentials stored privately.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-web"
+          ]
+        }
+      },
+      {
+        "title": "Use the correct callback setting",
+        "description": "For code exchange, redirect_uri must exactly match a registered callback, including path and port. Localhost HTTP is supported for local testing.",
+        "expectedOutcome": "Your callback and registered URI agree.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-web"
+          ]
+        }
+      },
+      {
+        "title": "Plan the authorization test",
+        "description": "In your own backend, use the official library to request selected scopes with state at https://accounts.google.com/o/oauth2/v2/auth (response_type=code). Validate returned state and exchange the code at https://oauth2.googleapis.com/token. Request offline access only if background access is needed. Then call events.list on a test calendar.",
+        "expectedOutcome": "Expected: consent, a valid token response, and an authorized API result. This has not been performed here.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-web",
+            "google-events"
+          ]
+        }
+      },
+      {
+        "title": "Do not mix browser and server examples",
+        "description": "The JavaScript quickstart uses browser client configuration, authorized JavaScript origins, and an API key. An origin identifies a browser site; it is not a callback path. Follow the web-server guide for the primary flow here.",
+        "expectedOutcome": "You have kept browser-origin configuration separate from your server callback.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-quickstart"
+          ]
+        }
+      }
+    ],
+    "scopes": [
+      {
+        "name": "https://www.googleapis.com/auth/calendar.events.readonly",
+        "purpose": "Read events on calendars you can access. Candidate for an event viewer.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-scopes"
+          ]
+        }
+      },
+      {
+        "name": "https://www.googleapis.com/auth/calendar.events",
+        "purpose": "View and edit events. Request only when the feature needs event changes.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-scopes"
+          ]
+        }
+      }
+    ],
+    "approval": [
+      {
+        "text": "Check sensitive/restricted scope classifications and verification exceptions before public release. A Calendar read scope can still be sensitive.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-verification"
+          ]
+        }
+      },
+      {
+        "text": "For sensitive-scope review, prepare domain ownership, policy information, scope justification, and a demonstration video. Submit through Verification Center.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-verification"
+          ]
+        }
+      },
+      {
+        "text": "Workspace administrators may independently restrict sensitive-scope access.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-verification"
+          ]
+        }
+      }
+    ],
+    "blockers": [
+      {
+        "issue": "redirect_uri_mismatch",
+        "action": "Correct the callback URI in the client configuration or authorization request so they match exactly.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-web"
+          ]
+        }
+      },
+      {
+        "issue": "A testing user cannot authorize",
+        "action": "Check External audience test users and confirm that an Internal app is not being used by an outside account.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-consent"
+          ]
+        }
+      },
+      {
+        "issue": "Unverified-app warning",
+        "action": "Review the app’s scope classifications, exceptions, and verification path before broader release. Do not treat client creation as approval.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "google-verification"
+          ]
+        }
+      }
+    ],
+    "responsibilities": {
+      "agent": [
+        {
+          "text": "Compare Calendar methods with candidate scopes and draft a registration checklist.",
+          "evidence": {
+            "status": "estimated",
+            "sourceIds": [],
+            "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+          }
+        }
+      ],
+      "developer": [
+        {
+          "text": "Own the Cloud project; enter credentials into a private backend configuration, approve consent, and submit any required verification.",
+          "evidence": {
+            "status": "estimated",
+            "sourceIds": [],
+            "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+          }
+        }
+      ]
+    },
+    "nextActions": [
+      {
+        "text": "Choose a read-only or write feature and record its exact callback URL.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+        }
+      },
+      {
+        "text": "Implement and test the callback separately, then assess production verification for your chosen audience.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+        }
+      },
+      {
+        "text": "For a read-only smoke test, call GET https://www.googleapis.com/calendar/v3/calendars/primary/events with the authorized user’s access token. An empty event list can still be a successful response.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [
+            "google-events"
+          ],
+          "qualification": "Suggested test based on the documented events.list endpoint. Run only in your own application; this navigator has not executed it."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "slack",
+    "name": "Slack",
+    "category": "Messaging & collaboration",
+    "mark": "#",
+    "summary": "Understand app registration, bot scopes, workspace installation, and distribution.",
+    "keywords": [
+      "slack",
+      "messages",
+      "bot",
+      "workspace",
+      "chat",
+      "installation"
+    ],
+    "verificationStatus": "source-backed",
+    "oauthTestStatus": "not-tested",
+    "lastResearchedAt": "2026-11-03",
+    "difficulty": {
+      "level": "Moderate",
+      "explanation": "The main decisions are bot versus user access, callback configuration, and workspace or distribution restrictions.",
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [],
+        "qualification": "Editorial assessment of configuration decisions and permission complexity; not a provider rating."
+      }
+    },
+    "setupEstimate": {
+      "minMinutes": 20,
+      "maxMinutes": 40,
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [],
+        "qualification": "Editorial estimate for registration and configuration with existing accounts and permissions. Excludes callback implementation, OAuth testing, policy preparation, and external review. Not measured."
+      }
+    },
+    "sources": [
+      {
+        "id": "slack-create",
+        "title": "Create an app from app settings",
+        "url": "https://docs.slack.dev/app-management/quickstart-app-settings/",
+        "inspectedAt": "2026-11-03"
+      },
+      {
+        "id": "slack-oauth",
+        "title": "OAuth installation flow",
+        "url": "https://docs.slack.dev/authentication/installing-with-oauth/",
+        "inspectedAt": "2026-11-03"
+      },
+      {
+        "id": "slack-postman",
+        "title": "Credentials and optional Postman test",
+        "url": "https://docs.slack.dev/authentication/authorizing-with-postman/",
+        "inspectedAt": "2026-11-03"
+      },
+      {
+        "id": "slack-token",
+        "title": "oauth.v2.access and errors",
+        "url": "https://docs.slack.dev/reference/methods/oauth.v2.access/",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "slack-write",
+        "title": "chat:write scope",
+        "url": "https://docs.slack.dev/reference/scopes/chat.write/",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "slack-distribution",
+        "title": "App lifecycle and distribution",
+        "url": "https://docs.slack.dev/app-management/distribution/",
+        "inspectedAt": "2026-11-01"
+      }
+    ],
+    "approvalSummary": {
+      "text": "Workspace installation permission and Marketplace review are separate. Commercial distribution should go through Marketplace submission and approval.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "slack-postman",
+          "slack-distribution"
+        ]
+      }
+    },
+    "approvalWaitingTime": {
+      "text": "Unknown—confirm with provider or administrator.",
+      "evidence": {
+        "status": "unknown",
+        "sourceIds": [
+          "slack-distribution"
+        ],
+        "qualification": "The inspected sources do not establish a review or workspace approval duration for your app."
+      }
+    },
+    "prerequisites": [
+      {
+        "text": "A Slack workspace where you can install apps; an Admin or Owner may need to grant permission.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-postman"
+          ]
+        }
+      },
+      {
+        "text": "A defined app use case and a chosen HTTPS callback URL for your own backend. Callback implementation is separate from app registration.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Preparation inferred from Slack’s scope and redirect requirements; implementing or hosting a callback is outside the setup estimate."
+        }
+      }
+    ],
+    "steps": [
+      {
+        "title": "Create your Slack app",
+        "description": "In Slack’s app dashboard, choose Blank app → Continue. Enter the App Name, select the development Workspace, then select Create.",
+        "expectedOutcome": "A Slack app exists in the selected development workspace.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-create"
+          ]
+        }
+      },
+      {
+        "title": "Save client credentials",
+        "description": "In the app settings, open Basic Information → App Credentials. Locate the Client ID and Client Secret; store them privately for your backend.",
+        "expectedOutcome": "The backend can reference this app’s credentials without committing them to source control.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-postman"
+          ]
+        }
+      },
+      {
+        "title": "Register the HTTPS callback",
+        "description": "Open OAuth & Permissions → Redirect URLs. Add your backend’s HTTPS callback and save it. When redirect_uri is sent at authorization, send that same value at token exchange.",
+        "expectedOutcome": "The callback is registered and the authorization and exchange requests agree on its URI.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-oauth"
+          ]
+        }
+      },
+      {
+        "title": "Select bot or user permissions",
+        "description": "Open OAuth & Permissions → Scopes. Add the minimum Bot Token Scopes for the feature; choose User Token Scopes only for actions on behalf of a user.",
+        "expectedOutcome": "The configured scopes match the intended bot or user action.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-create"
+          ]
+        }
+      },
+      {
+        "title": "Authorize from your own app",
+        "description": "In your application, direct the user to https://slack.com/oauth/v2/authorize with client_id, scope for bot access or user_scope for user access, redirect_uri, and state. Validate state at the backend callback.",
+        "expectedOutcome": "After consent, the callback receives an authorization code.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-oauth"
+          ]
+        }
+      },
+      {
+        "title": "Exchange and test separately",
+        "description": "Your backend posts the code and client credentials to https://slack.com/api/oauth.v2.access. Check ok and any error before using tokens. Use a permitted test action in your development workspace.",
+        "expectedOutcome": "A successful exchange returns ok: true and an installation token. Check the permitted action separately; no OAuth test was run here.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-token"
+          ]
+        }
+      },
+      {
+        "title": "Review distribution",
+        "description": "For other workspaces, review Manage Distribution. Unlisted distribution supports pilots; apps intended for commercial distribution should be submitted and approved for Marketplace listing.",
+        "expectedOutcome": "Your intended distribution path is identified.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-distribution"
+          ]
+        }
+      }
+    ],
+    "scopes": [
+      {
+        "name": "chat:write",
+        "purpose": "Send messages as the app. It does not by itself allow posting in every public channel.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-write",
+            "slack-create"
+          ]
+        }
+      },
+      {
+        "name": "channels:read",
+        "purpose": "Example bot permission to access public-channel information, not message history.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-create"
+          ]
+        }
+      },
+      {
+        "name": "scope vs. user_scope",
+        "purpose": "Bot scopes use scope; user scopes use user_scope. Keep Sign in with Slack scopes in a separate OAuth flow from ordinary app scopes.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-oauth"
+          ]
+        }
+      }
+    ],
+    "approval": [
+      {
+        "text": "Ask your workspace Admin or Owner if installation is restricted.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-postman"
+          ]
+        }
+      },
+      {
+        "text": "Installing in a development workspace does not establish approval for wider distribution. Marketplace apps undergo review.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-distribution"
+          ]
+        }
+      }
+    ],
+    "blockers": [
+      {
+        "issue": "bad_redirect_uri",
+        "action": "Use the same redirect_uri in the authorization request and token exchange. Confirm the saved HTTPS Redirect URL.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-token",
+            "slack-oauth"
+          ]
+        }
+      },
+      {
+        "issue": "bad_client_secret or invalid_client_id",
+        "action": "Check the credentials against App Credentials for the same Slack app.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-token",
+            "slack-postman"
+          ]
+        }
+      },
+      {
+        "issue": "invalid_code",
+        "action": "Restart authorization for a new code rather than retrying an invalid value.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [
+            "slack-token"
+          ],
+          "qualification": "Recovery recommendation based on the documented invalid-code error; verify callback handling if it repeats."
+        }
+      },
+      {
+        "issue": "Bot cannot post in a channel",
+        "action": "Check chat:write and channel membership. Invite the app to the channel, or assess whether chat:write.public is truly needed.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "slack-create"
+          ]
+        }
+      }
+    ],
+    "responsibilities": {
+      "agent": [
+        {
+          "text": "Draft scope comparisons, callback implementation notes, and a distribution checklist.",
+          "evidence": {
+            "status": "estimated",
+            "sourceIds": [],
+            "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+          }
+        }
+      ],
+      "developer": [
+        {
+          "text": "Create and own the app, protect credentials, obtain administrator consent, and test installation in the intended workspace.",
+          "evidence": {
+            "status": "estimated",
+            "sourceIds": [],
+            "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+          }
+        }
+      ]
+    },
+    "nextActions": [
+      {
+        "text": "Start with one bot action and confirm workspace install permissions.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+        }
+      },
+      {
+        "text": "Implement state validation and code exchange outside this navigator before considering wider distribution.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "notion",
+    "name": "Notion",
+    "category": "Docs & knowledge",
+    "mark": "N",
+    "summary": "Plan a public connection, its capabilities, and access to selected workspace content.",
+    "keywords": [
+      "notion",
+      "pages",
+      "documents",
+      "knowledge",
+      "workspace",
+      "integration",
+      "connection"
+    ],
+    "verificationStatus": "source-backed",
+    "oauthTestStatus": "not-tested",
+    "lastResearchedAt": "2026-11-03",
+    "difficulty": {
+      "level": "Moderate",
+      "explanation": "Public OAuth requires choosing an installation scope, capabilities, and content access as well as configuring the callback.",
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [],
+        "qualification": "Editorial assessment of configuration decisions and permission complexity; not a provider rating."
+      }
+    },
+    "setupEstimate": {
+      "minMinutes": 20,
+      "maxMinutes": 45,
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [],
+        "qualification": "Editorial estimate for registration and configuration with existing accounts and permissions. Excludes callback implementation, OAuth testing, policy preparation, and external review. Not measured."
+      }
+    },
+    "sources": [
+      {
+        "id": "notion-public",
+        "title": "Public connections and installation scope",
+        "url": "https://developers.notion.com/guides/connections-and-tokens/public-integrations/overview",
+        "inspectedAt": "2026-11-03"
+      },
+      {
+        "id": "notion-auth",
+        "title": "Authorization",
+        "url": "https://developers.notion.com/guides/authorization/overview",
+        "inspectedAt": "2026-11-03"
+      },
+      {
+        "id": "notion-capabilities",
+        "title": "Connection capabilities",
+        "url": "https://developers.notion.com/reference/capabilities",
+        "inspectedAt": "2026-11-03"
+      },
+      {
+        "id": "notion-token",
+        "title": "Create a token and redirect URI rules",
+        "url": "https://developers.notion.com/reference/create-a-token",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "notion-errors",
+        "title": "API status codes",
+        "url": "https://developers.notion.com/reference/status-codes",
+        "inspectedAt": "2026-11-01"
+      },
+      {
+        "id": "notion-marketplace",
+        "title": "Optional Marketplace listing and review",
+        "url": "https://developers.notion.com/guides/get-started/marketplace-listing",
+        "inspectedAt": "2026-11-01"
+      }
+    ],
+    "approvalSummary": {
+      "text": "Marketplace listing is optional and separate from public OAuth. Listing submissions are reviewed; only Any workspace public connections are eligible.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "notion-marketplace"
+        ]
+      }
+    },
+    "approvalWaitingTime": {
+      "text": "For Marketplace submissions, Notion says to expect an email response within 5–10 business days. This is a response expectation, not guaranteed approval or a prerequisite wait for ordinary OAuth.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "notion-marketplace"
+        ]
+      }
+    },
+    "prerequisites": [
+      {
+        "text": "A Notion account with access to the Developer portal and a workspace for testing the public connection.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-public"
+          ]
+        }
+      },
+      {
+        "text": "Access to pages you can share: the OAuth page picker shows resources where the authorizing user has full access.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-auth"
+          ]
+        }
+      },
+      {
+        "text": "A chosen installation scope and backend callback URL. These are inputs to registration; you do not need an existing OAuth connection to begin.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Preparation checklist inferred from public-connection configuration; verify any organization-specific permissions with an administrator."
+        }
+      }
+    ],
+    "steps": [
+      {
+        "title": "Create your Notion OAuth connection",
+        "description": "In the Notion Developer portal, open Build → Connections → Create new connection. Enter the connection name and development workspace, and choose the installation scope: Any workspace for a public integration, or specific workspaces for a scoped OAuth integration.",
+        "expectedOutcome": "A connection is created with the intended installation scope; that scope cannot be changed afterward.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-public",
+            "notion-auth"
+          ]
+        }
+      },
+      {
+        "title": "Configure capabilities",
+        "description": "In the connection’s Developer portal settings, select the content and user capabilities needed by the feature. For a read-only exporter, review Read content.",
+        "expectedOutcome": "The connection requests the capabilities needed for the intended operations.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-capabilities"
+          ]
+        }
+      },
+      {
+        "title": "Configure OAuth and credentials",
+        "description": "In the connection’s OAuth configuration, register redirect URI(s). Open Configuration to retrieve the client ID and secret; keep the secret out of source control and frontend code.",
+        "expectedOutcome": "The backend callback is registered and the credentials are stored privately.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-auth"
+          ]
+        }
+      },
+      {
+        "title": "Start authorization and select pages",
+        "description": "From the portal’s Configuration tab, use the authorization URL in your own application with a state value. The user reviews capabilities and selects pages before consent.",
+        "expectedOutcome": "The callback receives a code after consent, or an error if access is denied.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-auth"
+          ]
+        }
+      },
+      {
+        "title": "Exchange the code on your backend",
+        "description": "POST JSON to https://api.notion.com/v1/oauth/token with grant_type: authorization_code and code. Use HTTP Basic authentication with base64(client_id:client_secret). Include redirect_uri when it was supplied at authorization or multiple URIs exist; omit it for a single configured URI when absent from authorization.",
+        "expectedOutcome": "A successful token response is available to your backend. Handle errors and keep credentials private.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-token"
+          ]
+        }
+      },
+      {
+        "title": "Run a separate content-access test",
+        "description": "In your own implementation, correlate the returned state, handle cancellation, and try a permitted read on selected content. Compare a denied or unshared resource too.",
+        "expectedOutcome": "Selected content is accessible only as permitted. These checks have not been run here.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [
+            "notion-auth"
+          ],
+          "qualification": "Suggested test procedure inferred from documented page access and OAuth behavior; use your own backend."
+        }
+      },
+      {
+        "title": "Consider Marketplace only if needed",
+        "description": "For optional listing, use Listings → Connections, prepare listing details, and submit for review.",
+        "expectedOutcome": "A listing submission is distinct from OAuth setup.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-marketplace"
+          ]
+        }
+      }
+    ],
+    "scopes": [
+      {
+        "name": "Read content",
+        "purpose": "Read existing content; it does not grant write access.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-capabilities"
+          ]
+        }
+      },
+      {
+        "name": "Insert content / Update content",
+        "purpose": "Insert creates content; Update changes existing content. Neither automatically grants all other capabilities.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-capabilities"
+          ]
+        }
+      },
+      {
+        "name": "Installation scope and page access",
+        "purpose": "Installation scope controls eligible workspaces. Page selection controls content access; capabilities control operations. These are not Google-style scope URI strings.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-public",
+            "notion-capabilities"
+          ]
+        }
+      }
+    ],
+    "approval": [
+      {
+        "text": "Public OAuth can be used without a Marketplace listing. A listing is an optional review process.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-marketplace"
+          ]
+        }
+      },
+      {
+        "text": "Selected workspaces only connections are not Marketplace-eligible; create a new connection if a different installation scope is needed.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-public"
+          ]
+        }
+      },
+      {
+        "text": "OAuth authorization can start once client credentials and the redirect URI are configured; Marketplace submission or review is not required.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-auth"
+          ]
+        }
+      }
+    ],
+    "blockers": [
+      {
+        "issue": "access_denied on the callback",
+        "action": "Treat cancellation as a declined request; offer the user a deliberate way to restart authorization.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-auth"
+          ]
+        }
+      },
+      {
+        "issue": "Token request fails around redirect_uri",
+        "action": "Apply the token endpoint’s conditional redirect_uri rule; do not always include or always omit it.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-token"
+          ]
+        }
+      },
+      {
+        "issue": "403 restricted_resource or 404 object_not_found",
+        "action": "Check capabilities and whether the resource was shared with the connection; inspect the error code and message.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-errors"
+          ]
+        }
+      },
+      {
+        "issue": "Access changes after capability edits",
+        "action": "Have the user re-authenticate after changing public-connection capabilities.",
+        "evidence": {
+          "status": "documented",
+          "sourceIds": [
+            "notion-capabilities"
+          ]
+        }
+      }
+    ],
+    "responsibilities": {
+      "agent": [
+        {
+          "text": "Compare content operations with capabilities and draft a callback and page-access test checklist.",
+          "evidence": {
+            "status": "estimated",
+            "sourceIds": [],
+            "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+          }
+        }
+      ],
+      "developer": [
+        {
+          "text": "Own the connection, choose installation scope, handle secrets, authorize selected pages, and perform the real OAuth test.",
+          "evidence": {
+            "status": "estimated",
+            "sourceIds": [],
+            "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+          }
+        }
+      ]
+    },
+    "nextActions": [
+      {
+        "text": "Choose the installation scope carefully before registering the connection.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+        }
+      },
+      {
+        "text": "Prepare a small test page and independently validate OAuth and capability enforcement.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Suggested division of work, not a provider rule or a claim that an agent has performed these actions."
+        }
+      }
+    ]
+  }
+]

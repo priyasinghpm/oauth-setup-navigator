@@ -1,0 +1,1 @@
+export default function Loading() { return <div className="loading-state" role="status" aria-label="Loading provider guide"><p>Loading provider guide…</p><div className="skeleton skeleton-title" /><div className="skeleton" /><div className="skeleton" /><div className="skeleton" /></div>; }

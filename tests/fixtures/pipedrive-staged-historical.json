@@ -1,0 +1,116 @@
+{
+  "provenance": {
+    "requestId": "2d69a462-9193-4ceb-92bc-6a96085f59c0",
+    "kind": "historical-live-section-output",
+    "note": "Unmodified steps from the successful staged diagnostic, including backend-resolved exact evidence. Not a complete guide or synthetic documentation."
+  },
+  "steps": [
+    {
+      "title": "Request Authorization",
+      "description": "Authorize a user by redirecting them to the Pipedrive OAuth authorization page and request their permissions to act on their behalf. This step is necessary to implement only when you allow app installation outside of the Marketplace.",
+      "expectedOutcome": "The authorization code will be sent to the callback URL if a user approves the app install, or the corresponding error if declined.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-37db3fd0103b864c",
+          "source-e7f6d7645904e9b7"
+        ],
+        "qualification": "Directly supports requesting authorization by redirecting the user and handling the callback URL.",
+        "quotations": [
+          {
+            "sourceId": "source-37db3fd0103b864c",
+            "evidenceId": "evidence-b1430f5e38135b95c4c1b732",
+            "sourceUrl": "https://developers.pipedrive.com/docs/api/v1/Oauth",
+            "sourceTitle": "/docs/api/v1/Oauth",
+            "quote": "Authorize a user by redirecting them to the Pipedrive OAuth authorization page and request their permissions to act on their behalf. This step is necessary to implement only when you allow app installation outside of the Marketplace.",
+            "contextBefore": " requests to the `https://oauth.pipedrive.com` domain. After registering the app, you must add the necessary server-side logic to your app to establish the OAuth flow. Please read more about authorization step on the [Pipedrive Developers page](https://pipedrive.readme.io/docs/marketplace-oauth-authorization).\n\n#### Requesting authorization\n\n![Copy link]()\n\n",
+            "contextAfter": "\n\nAPI v1\n\n###### Request\n\nGET\n\n/oauth/authorize\n\n###### Query parameters\n\nclient\\_id\n\nstring\n\nrequired\n\nThe client ID provided to you by the Pipedrive Marketplace when you register your app\n\nredirect\\_uri\n\nstring\n\nrequired\n\nThe callback URL you provided when you registered your app. Authorization code will be sent to that URL (if it matches with the value yo",
+            "sectionHeading": "#### Requesting authorization",
+            "startOffset": 4527,
+            "endOffset": 4760,
+            "clipped": false
+          },
+          {
+            "sourceId": "source-e7f6d7645904e9b7",
+            "evidenceId": "evidence-e5c98cb10a8fdcbf5ab7d32c",
+            "sourceUrl": "https://pipedrive.readme.io/docs/marketplace-oauth-authorization",
+            "sourceTitle": "OAuth authorization",
+            "quote": "```text URL\nGET https://oauth.pipedrive.com/oauth/authorize?client_id=b4d083d9216986345b32&state=148aHxbdd92&redirect_uri=https://awesomeapp.com/oauth/callback\n```",
+            "contextBefore": " Requesting authorization\n\n<hr />\n\n<Callout icon=\"\ud83d\udea7\" theme=\"warn\">\n  This step is necessary to implement only when you allow app installation **outside** of the Marketplace.\n</Callout>\n\nFirst, your app must start the authorization process. For that, you must redirect the customer\u2019s web browser to make a request to the OAuth server\u2019s `/authorize` endpoint:\n\n",
+            "contextAfter": "\n\nThe request must provide the following `GET` parameters:\n\n| Query parameter | Required | Description                                                                                                                                                                                                                                                                  ",
+            "sectionHeading": "## Step 1: Requesting authorization",
+            "startOffset": 2375,
+            "endOffset": 2538,
+            "clipped": false
+          },
+          {
+            "sourceId": "source-37db3fd0103b864c",
+            "evidenceId": "evidence-ec02b4617fd88cf5b42cf3b3",
+            "sourceUrl": "https://developers.pipedrive.com/docs/api/v1/Oauth",
+            "sourceTitle": "/docs/api/v1/Oauth",
+            "quote": "The callback URL you provided when you registered your app. Authorization code will be sent to that URL (if it matches with the value you entered in the registration form) if a user approves the app install. Or, if a customer declines, the corresponding error will also be sent to this URL.",
+            "contextBefore": "permissions to act on their behalf. This step is necessary to implement only when you allow app installation outside of the Marketplace.\n\nAPI v1\n\n###### Request\n\nGET\n\n/oauth/authorize\n\n###### Query parameters\n\nclient\\_id\n\nstring\n\nrequired\n\nThe client ID provided to you by the Pipedrive Marketplace when you register your app\n\nredirect\\_uri\n\nstring\n\nrequired\n\n",
+            "contextAfter": "\n\nstate\n\nstring\n\nYou may pass any random string as the state parameter and the same string will be returned to your app after a user authorizes access. It may be used to store the user's session ID from your app or distinguish different responses. Using state may increase security; see RFC-6749.\n\n###### Response\n\n200\n\nOK\n\nAs a result of the request, the cust",
+            "sectionHeading": "###### Query parameters",
+            "startOffset": 4984,
+            "endOffset": 5274,
+            "clipped": false
+          }
+        ]
+      }
+    },
+    {
+      "title": "Exchange Authorization Code for Tokens",
+      "description": "To exchange the authorization_code for the tokens, execute an HTTP POST request to the OAuth server, authenticated via HTTP Basic Auth with client_id and client_secret, using application/x-www-form-urlencoded content type and required body parameters grant_type, code, and redirect_uri.",
+      "expectedOutcome": "Receive a response with the JSON data containing access and refresh tokens.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-e7f6d7645904e9b7"
+        ],
+        "qualification": "Directly documents the POST endpoint, authentication mechanism, and body parameters for exchanging the authorization code.",
+        "quotations": [
+          {
+            "sourceId": "source-e7f6d7645904e9b7",
+            "evidenceId": "evidence-f5d783a54933724b2fd4f79d",
+            "sourceUrl": "https://pipedrive.readme.io/docs/marketplace-oauth-authorization",
+            "sourceTitle": "OAuth authorization",
+            "quote": "| Body parameter | Description                                                                                                                 |\n| :------------- | :-------------------------------------------------------------------------------------------------------------------------- |\n| `grant_type`   | Since you are trying to exchange an authorization code for a pair of tokens, you must use the value `\"authorization_code\"`. |\n| `code`         | The authorization code that you received after the user confirmed app installation.                                         |\n| `redirect_uri` | The callback URL you provided when you registered your app.                                                                 |",
+            "contextBefore": "_secret` values. The value should be `\"Authorization: Basic <base64(client_id:client_secret)>\"`. |\n\n<Callout icon=\"\ud83d\udea7\" theme=\"warn\">\n  Note that authentication could also be done by providing values for the `client_id` and the `client_secret` in the request body, but it's not recommended. Use it only when you cannot use HTTP Basic Auth approach.\n</Callout>\n\n",
+            "contextAfter": "\n\nIf all data is correct, you will receive a response with the JSON data:\n\n<Table align={[\"left\",\"left\"]}>\n  <thead>\n    <tr>\n      <th>\n        JSON key name\n      </th>\n\n      <th>\n        Description\n      </th>\n    </tr>\n  </thead>\n\n  <tbody>\n    <tr>\n      <td>\n        `access_token`\n      </td>\n\n      <td>\n        You need to use an `access token` for ",
+            "sectionHeading": "## Step 4 and Step 5: Getting the tokens",
+            "startOffset": 8377,
+            "endOffset": 9101,
+            "clipped": false
+          },
+          {
+            "sourceId": "source-e7f6d7645904e9b7",
+            "evidenceId": "evidence-e43d43271a42648be2763b02",
+            "sourceUrl": "https://pipedrive.readme.io/docs/marketplace-oauth-authorization",
+            "sourceTitle": "OAuth authorization",
+            "quote": "To execute the request, your request **has** to be authenticated via HTTP Basic Auth with the values of the `client_id` and the `client_secret` (you can find the values like [this](https://pipedrive.readme.io/docs/client-id-and-client-secret#how-to-get-your-client_id-and-client_secret)).",
+            "contextBefore": "\n<Callout icon=\"\ud83d\udea7\" theme=\"warn\">\n  Note that the `authorization_code` expires in **5 minutes**.\n</Callout>\n\nTo exchange the `authorization_code` for the tokens, you must execute this HTTP request to the OAuth server:\n\n```text URL\nPOST https://oauth.pipedrive.com/oauth/token\n```\n\nThe content-type for the request must be `application/x-www-form-urlencoded`.\n\n",
+            "contextAfter": "\n\n| Header parameter | Description                                                                                                                                                   |\n| :--------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------",
+            "sectionHeading": "## Step 4 and Step 5: Getting the tokens",
+            "startOffset": 7283,
+            "endOffset": 7571,
+            "clipped": false
+          },
+          {
+            "sourceId": "source-e7f6d7645904e9b7",
+            "evidenceId": "evidence-b83e905331f38e291c361536",
+            "sourceUrl": "https://pipedrive.readme.io/docs/marketplace-oauth-authorization",
+            "sourceTitle": "OAuth authorization",
+            "quote": "```text URL\nPOST https://oauth.pipedrive.com/oauth/token\n```",
+            "contextBefore": "ill need to exchange the `authorization_code` to a pair of access and refresh tokens. Using an access token, you can access the user\u2019s data.\n\n<Callout icon=\"\ud83d\udea7\" theme=\"warn\">\n  Note that the `authorization_code` expires in **5 minutes**.\n</Callout>\n\nTo exchange the `authorization_code` for the tokens, you must execute this HTTP request to the OAuth server:\n\n",
+            "contextAfter": "\n\nThe content-type for the request must be `application/x-www-form-urlencoded`.\n\nTo execute the request, your request **has** to be authenticated via HTTP Basic Auth with the values of the `client_id` and the `client_secret` (you can find the values like [this](https://pipedrive.readme.io/docs/client-id-and-client-secret#how-to-get-your-client_id-and-client_",
+            "sectionHeading": "## Step 4 and Step 5: Getting the tokens",
+            "startOffset": 7142,
+            "endOffset": 7202,
+            "clipped": false
+          }
+        ]
+      }
+    }
+  ]
+}

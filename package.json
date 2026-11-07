@@ -1,0 +1,39 @@
+{
+  "name": "oauth-setup-navigator",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack --hostname 127.0.0.1",
+    "build": "next build --webpack",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "research:hubspot": "node --conditions=react-server --import tsx scripts/research-hubspot.ts",
+    "generate:hubspot": "node --conditions=react-server --import tsx scripts/generate-hubspot.ts",
+    "worker:guides": "node --conditions=react-server --import tsx scripts/guide-worker.ts"
+  },
+  "dependencies": {
+    "@google/genai": "^2.32.0",
+    "cheerio": "^1.2.0",
+    "ipaddr.js": "^2.5.0",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "robots-parser": "^3.0.1",
+    "server-only": "^0.0.1",
+    "tldts": "^7.4.19"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.8",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "jsdom": "^27.0.1",
+    "tailwindcss": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}

@@ -1,0 +1,474 @@
+{
+  "researchedAt": "2026-11-03",
+  "seeded": {
+    "status": "partial",
+    "message": "Retrieved public source material; human review is required before treating it as setup guidance.",
+    "pages": [
+      {
+        "url": "https://developers.hubspot.com/",
+        "requestedUrl": "https://developers.hubspot.com/",
+        "title": "HubSpot Developers | Create tomorrow's solutions today on HubSpot's Developer Platform.",
+        "topics": [
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:37:57.076Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "unspecified",
+        "textCharacters": 4338
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+        "requestedUrl": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+        "title": "Manage OAuth access tokens using the v3 APIs",
+        "topics": [
+          "app-creation",
+          "redirect-uris",
+          "scopes",
+          "authorization",
+          "distribution",
+          "troubleshooting"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:37:57.757Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 11269
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+        "requestedUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+        "title": "Authentication overview",
+        "topics": [
+          "app-creation",
+          "scopes",
+          "authorization",
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:37:58.273Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 8503
+      },
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "requestedUrl": "https://developers.hubspot.com/docs",
+        "title": "HubSpot Developer Documentation",
+        "topics": [
+          "app-creation"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:37:58.579Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 2405
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/oauth-tokens/v1/guide.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/oauth-tokens/v1/guide.md",
+        "title": "Manage OAuth access tokens using the v1 APIs",
+        "topics": [
+          "app-creation",
+          "redirect-uris",
+          "scopes",
+          "authorization",
+          "troubleshooting"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+        "retrievedAt": "2026-11-03T05:37:59.156Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 7257
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+        "title": "Create a new app using the CLI",
+        "topics": [
+          "app-creation",
+          "redirect-uris",
+          "scopes",
+          "authorization",
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+        "retrievedAt": "2026-11-03T05:37:59.398Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 15252
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide.md",
+        "title": "OAuth Quickstart Guide",
+        "topics": [
+          "app-creation",
+          "redirect-uris",
+          "scopes",
+          "authorization"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+        "retrievedAt": "2026-11-03T05:37:59.735Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 13308
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/app-configuration.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/app-configuration.md",
+        "title": "App configuration",
+        "topics": [
+          "app-creation",
+          "redirect-uris",
+          "scopes",
+          "authorization",
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+        "retrievedAt": "2026-11-03T05:37:59.976Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 13744
+      }
+    ],
+    "requests": [
+      {
+        "url": "https://developers.hubspot.com/robots.txt",
+        "kind": "robots",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/oauth-tokens/v1/guide.md",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide.md",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/app-configuration.md",
+        "kind": "page",
+        "status": 200
+      }
+    ],
+    "failures": [],
+    "missingTopics": [
+      "review"
+    ],
+    "limits": {
+      "maxRequests": 24,
+      "maxPages": 8,
+      "maxBytes": 3000000,
+      "maxTextChars": 24000,
+      "timeoutMs": 6000,
+      "totalTimeoutMs": 60000,
+      "maxRedirects": 3
+    },
+    "requestCount": 9,
+    "limitations": [
+      "Website input asserts the official domain; cross-domain documentation hosting requires its own explicit website input.",
+      "No search index is built. noindex is retained as metadata; nofollow, robots disallow, and extraction restrictions are honored.",
+      "Page text is untrusted evidence, never executable instructions. Topic matches indicate coverage candidates, not verified OAuth facts.",
+      "No JavaScript rendering, login, CAPTCHA bypass, paywall access, LLM, or search API. Queries and non-HTTPS URLs are excluded.",
+      "Discovery queue remains: request, page, or total-time cap stopped further retrieval."
+    ],
+    "website": "https://developers.hubspot.com/",
+    "domainEstablishedBy": "user-website"
+  },
+  "websiteOnly": {
+    "status": "partial",
+    "message": "Retrieved public source material; human review is required before treating it as setup guidance.",
+    "pages": [
+      {
+        "url": "https://developers.hubspot.com/",
+        "requestedUrl": "https://developers.hubspot.com/",
+        "title": "HubSpot Developers | Create tomorrow's solutions today on HubSpot's Developer Platform.",
+        "topics": [
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:40:25.280Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "unspecified",
+        "textCharacters": 4338
+      },
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "requestedUrl": "https://developers.hubspot.com/docs",
+        "title": "HubSpot Developer Documentation",
+        "topics": [
+          "app-creation"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:40:25.986Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 2405
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/developer-tooling/local-development/troubleshooting.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/developer-tooling/local-development/troubleshooting.md",
+        "title": "Troubleshooting",
+        "topics": [
+          "troubleshooting"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/docs/llms.txt",
+        "retrievedAt": "2026-11-03T05:40:28.301Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 2461
+      },
+      {
+        "url": "https://developers.hubspot.com/move-data",
+        "requestedUrl": "https://developers.hubspot.com/move-data",
+        "title": "Move Data In and Out of HubSpot | HubSpot Developers",
+        "topics": [
+          "scopes",
+          "troubleshooting"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:40:36.289Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "unspecified",
+        "textCharacters": 3281
+      },
+      {
+        "url": "https://developers.hubspot.com/visualize-data",
+        "requestedUrl": "https://developers.hubspot.com/visualize-data",
+        "title": "Visualize HubSpot Data | HubSpot Developers",
+        "topics": [
+          "app-creation",
+          "scopes"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/",
+        "retrievedAt": "2026-11-03T05:40:37.653Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "unspecified",
+        "textCharacters": 2988
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/add-features/ui-extensions/extension-points/create-a-settings-page.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/features/create-a-settings-component",
+        "title": "Create a settings page",
+        "topics": [
+          "app-creation",
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/visualize-data",
+        "retrievedAt": "2026-11-03T05:40:38.653Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 9706
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/create-an-app-settings-page.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/create-an-app-settings-page.md",
+        "title": "Create a settings page for a legacy public app",
+        "topics": [
+          "app-creation",
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/docs/apps/developer-platform/add-features/ui-extensions/extension-points/create-a-settings-page.md",
+        "retrievedAt": "2026-11-03T05:40:38.911Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 19696
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+        "requestedUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+        "title": "Create a new app using the CLI",
+        "topics": [
+          "app-creation",
+          "redirect-uris",
+          "scopes",
+          "authorization",
+          "distribution"
+        ],
+        "discoveredFrom": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/create-an-app-settings-page.md",
+        "retrievedAt": "2026-11-03T05:40:40.020Z",
+        "truncated": false,
+        "trust": "untrusted-source-text",
+        "indexing": "noindex",
+        "textCharacters": 15252
+      }
+    ],
+    "requests": [
+      {
+        "url": "https://developers.hubspot.com/robots.txt",
+        "kind": "robots",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/llms.txt",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/developer-tooling/local-development/troubleshooting.md",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/specs/2026-09/auth-oauth-v2026-09.json",
+        "kind": "page",
+        "status": 404
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/specs/2026-03/auth-oauth-v2026-03.json",
+        "kind": "page",
+        "status": 404
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/specs/legacy/v3/auth-oauth-v3.json",
+        "kind": "page",
+        "status": 404
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/specs/legacy/v1/auth-oauth-v1.json",
+        "kind": "page",
+        "status": 404
+      },
+      {
+        "url": "https://developers.hubspot.com/hubfs/developers.hubspot.com-sitemap.xml",
+        "kind": "sitemap",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/sitemap.xml",
+        "kind": "sitemap",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/move-data",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/visualize-data",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/features/create-a-settings-component",
+        "kind": "page",
+        "status": 307
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/add-features/ui-extensions/extension-points/create-a-settings-page.md",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/create-an-app-settings-page.md",
+        "kind": "page",
+        "status": 200
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+        "kind": "page",
+        "status": 200
+      }
+    ],
+    "failures": [
+      {
+        "url": "https://developers.hubspot.com/docs/specs/2026-09/auth-oauth-v2026-09.json",
+        "reason": "HTTP 404"
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/specs/2026-03/auth-oauth-v2026-03.json",
+        "reason": "HTTP 404"
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/specs/legacy/v3/auth-oauth-v3.json",
+        "reason": "HTTP 404"
+      },
+      {
+        "url": "https://developers.hubspot.com/docs/specs/legacy/v1/auth-oauth-v1.json",
+        "reason": "HTTP 404"
+      }
+    ],
+    "missingTopics": [
+      "review"
+    ],
+    "limits": {
+      "maxRequests": 24,
+      "maxPages": 8,
+      "maxBytes": 3000000,
+      "maxTextChars": 24000,
+      "timeoutMs": 6000,
+      "totalTimeoutMs": 60000,
+      "maxRedirects": 3
+    },
+    "requestCount": 17,
+    "limitations": [
+      "Website input asserts the official domain; cross-domain documentation hosting requires its own explicit website input.",
+      "No search index is built. noindex is retained as metadata; nofollow, robots disallow, and extraction restrictions are honored.",
+      "Page text is untrusted evidence, never executable instructions. Topic matches indicate coverage candidates, not verified OAuth facts.",
+      "No JavaScript rendering, login, CAPTCHA bypass, paywall access, LLM, or search API. Queries and non-HTTPS URLs are excluded.",
+      "Discovery queue remains: request, page, or total-time cap stopped further retrieval."
+    ],
+    "website": "https://developers.hubspot.com/",
+    "domainEstablishedBy": "user-website"
+  },
+  "requestAccounting": {
+    "seededVerification": 9,
+    "websiteOnlyVerification": 17,
+    "earlierDiagnosticRuns": 60,
+    "totalExternalAttempts": 86,
+    "sandboxDnsFailureAttempts": 1
+  }
+}

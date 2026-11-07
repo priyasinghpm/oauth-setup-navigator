@@ -1,0 +1,463 @@
+{
+  "slug": "hubspot",
+  "name": "HubSpot",
+  "category": "CRM",
+  "mark": "HS",
+  "summary": "Integrate with HubSpot using OAuth 2.0 authentication to securely manage access tokens, authorize multi-account access, and interact with HubSpot APIs.",
+  "keywords": [
+    "HubSpot",
+    "OAuth 2.0",
+    "CRM",
+    "Authentication",
+    "API Tokens"
+  ],
+  "verificationStatus": "source-backed",
+  "oauthTestStatus": "not-tested",
+  "lastResearchedAt": "2026-11-03",
+  "difficulty": {
+    "level": "Moderate",
+    "explanation": "Requires creating an app project, configuring metadata, managing an OAuth backend service for token exchange, and handling redirect URIs.",
+    "evidence": {
+      "status": "estimated",
+      "sourceIds": [
+        "source-1876a2b7bb2849dd",
+        "source-b360a5fa755c5bf4"
+      ],
+      "qualification": "Estimated based on the requirement to set up and host an OAuth backend service and configure app project metadata."
+    }
+  },
+  "setupEstimate": {
+    "minMinutes": 30,
+    "maxMinutes": 60,
+    "evidence": {
+      "status": "estimated",
+      "sourceIds": [],
+      "qualification": "Editorial estimate for setting up project files, configuring app metadata, and implementing backend token exchange."
+    }
+  },
+  "approvalSummary": {
+    "text": "Approval requirements and waiting time could not be established from the retrieved documentation.",
+    "evidence": {
+      "status": "unknown",
+      "sourceIds": [],
+      "qualification": "The retrieved excerpts do not establish approval or review requirements or a timeline; confirm these with the provider."
+    }
+  },
+  "approvalWaitingTime": {
+    "text": "Approval waiting time could not be established from the retrieved documentation.",
+    "evidence": {
+      "status": "unknown",
+      "sourceIds": [],
+      "qualification": "The retrieved excerpts do not establish approval waiting time."
+    }
+  },
+  "prerequisites": [
+    {
+      "text": "A HubSpot account with administrative or developer access.",
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [
+          "source-b360a5fa755c5bf4"
+        ],
+        "qualification": "Required to open project details and manage app settings."
+      }
+    },
+    {
+      "text": "A backend service capable of handling HTTP POST requests and managing OAuth tokens.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-1876a2b7bb2849dd"
+        ],
+        "qualification": "You'll need to set up and host an OAuth backend service to initiate the process and manage token data.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-50dfe0ce50dc1b9413ad3cc5",
+            "sourceId": "source-1876a2b7bb2849dd",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "sourceTitle": "Authentication overview",
+            "quote": "If you plan to distribute your app to multiple accounts (either through listing on the HubSpot Marketplace or by managing specific authorized accounts), your app must be built using OAuth authentication. You'll need to set up and host an OAuth backend service (e.g., hosted as a Docker instance using a cloud service provider) to initiate the OAuth process and manage token data for users installing",
+            "contextBefore": "ow you plan to install your app. HubSpot also provides local authentication tooling via the HubSpot CLI.\n\n## App authentication\n\nThere are two authentication types available based on how you plan to distribute your app: OAuth is required for multiple accounts, while static auth access tokens are used for installing in a single account at a time.\n\n### OAuth\n\n",
+            "contextAfter": " your app in their account.\n\nHubSpot provides a Node.js quickstart guide [here](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide.md), which includes code you can run in a Docker instance with full OAuth support. Authentication configuration details for your app are available on the app details",
+            "sectionHeading": "### OAuth",
+            "startOffset": 798,
+            "endOffset": 1197,
+            "clipped": true
+          }
+        ]
+      }
+    },
+    {
+      "text": "The HubSpot CLI installed for local development and project uploading.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-1876a2b7bb2849dd"
+        ],
+        "qualification": "Used to manage local development and authenticate CLI commands.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-a5b0bde61c219ca3e3862524",
+            "sourceId": "source-1876a2b7bb2849dd",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "sourceTitle": "Authentication overview",
+            "quote": "A client secret is a confidential value specific to your app, which is used for managing [OAuth tokens](https://developers.hubspot.com/docs/api-reference/latest/authentication/manage-oauth-tokens.md), validating [requests from HubSpot](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/request-validation.md), and generating a [client credentials",
+            "contextBefore": "sed to authenticate CLI commands.\n\nLearn more about [installing the HubSpot CLI](https://developers.hubspot.com/docs/developer-tooling/local-development/hubspot-cli/install-the-cli.md). A full list of CLI commands is provided [here](https://developers.hubspot.com/docs/developer-tooling/local-development/hubspot-cli/reference.md).\n\n## Client secret rotation\n\n",
+            "contextAfter": " token](#client-credentials).\n\nIf this secret is compromised (e.g., you mistakenly committed the secret to a git repository), you can rotate the secret to ensure the old one is invalidated and cannot be used.\n\nClient secret rotation is supported for [legacy public apps](https://developers.hubspot.com/docs/apps/legacy-apps/public-apps/overview.md), project-ba",
+            "sectionHeading": "## Client secret rotation",
+            "startOffset": 7328,
+            "endOffset": 7710,
+            "clipped": true
+          }
+        ]
+      }
+    }
+  ],
+  "steps": [
+    {
+      "title": "Configure App Authentication in app-hsmeta.json",
+      "description": "Update your local project's `app-hsmeta.json` file to set the authentication type to `oauth`, configure the distribution channel (e.g., `marketplace`), and define valid redirect URLs.",
+      "expectedOutcome": "The project is configured for OAuth authentication with correct redirect endpoints specified.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-b360a5fa755c5bf4",
+          "source-1876a2b7bb2849dd"
+        ],
+        "qualification": "Configure your app to use OAuth by setting the auth type and adding valid redirect URLs.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-526e274081373da5b3f4bd64",
+            "sourceId": "source-b360a5fa755c5bf4",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+            "sourceTitle": "Create a new app using the CLI",
+            "quote": "If you plan on distributing your app to multiple accounts (either with a specific set of allowlisted accounts or via the HubSpot app marketplace), you'll need to set up OAuth for your app by following the steps below. Otherwise, you can skip this step and proceed to [upload your project](#upload-your-project).",
+            "contextBefore": "]\n>\n> Keep in mind that UIDs are used as a unique identifier for all your project's components and features. Once your app or any of its features has been uploaded with a specific UID, changing it in subsequent deployments will force the platform to recognize it as different from previous builds, which may not be intended.\n\n### Set up OAuth (if applicable)\n\n",
+            "contextAfter": "\n\n* Add one or more valid redirect URLs to the `app-hsmeta.json` file based on your local (or another non-production) OAuth server configuration.\n* If you don't have a backend service set up already, you can get started by using the [sample OAuth Node.js example](http://github.com/hubspot/oauth-quickstart-nodejs) and run it locally. It's already set up to wo",
+            "sectionHeading": "### Set up OAuth (if applicable)",
+            "startOffset": 7228,
+            "endOffset": 7539,
+            "clipped": false
+          },
+          {
+            "evidenceId": "evidence-aee6d31ee31cc070a9b1d615",
+            "sourceId": "source-1876a2b7bb2849dd",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+            "sourceTitle": "Authentication overview",
+            "quote": "Configure your app to use OAuth by setting the `type` subproperty within the `auth` field of your app's `app-hsmeta.json` config to `oauth`. You'll also need to set the `distribution` property to `marketplace` or `private` based on how you plan to distribute your app:",
+            "contextBefore": "f you wanted to retrieve contacts for the account with an access token of `00000000-aaaa-xxx-yyyy-zzzzzzzzzzzz`, your request would resemble the following:\n\n```shell theme={null}\ncurl --request GET \\\n--header \"Authorization: Bearer 00000000-aaaa-xxx-yyyy-zzzzzzzzzzzz\" \\\n--url \"https://api.hubapi.com/crm/objects/2026-03/contacts?limit=10&archived=false\"\n```\n\n",
+            "contextAfter": "\n\n* `marketplace`: used if you want the app to be eligible for listing on the HubSpot Marketplace.\n* `private`: used if you only want to install your app in a specific set of allowlisted accounts. If you choose this option, you can install your app in a maximum of 10 accounts at a time.\n\nLearn more in the [app configuration guide](https://developers.hubspot.",
+            "sectionHeading": "### OAuth",
+            "startOffset": 2308,
+            "endOffset": 2576,
+            "clipped": false
+          },
+          {
+            "evidenceId": "evidence-bec02ed8935acba291ad200f",
+            "sourceId": "source-b360a5fa755c5bf4",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+            "sourceTitle": "Create a new app using the CLI",
+            "quote": "      \"redirectUrls\": [\"http://localhost:3000/oauth-callback\"],",
+            "contextBefore": "evious step.\n\n```json expandable Highlight={7-10} title=\"Example app-hsmeta.json\" theme={null}\n{\n  \"uid\": \"new_developer_platform_app\",\n  \"type\": \"app\",\n  \"config\": {\n    \"description\": \"An example to demonstrate how to build an app with developer projects.\",\n    \"name\": \"my first app\",\n    \"distribution\": \"marketplace\",\n    \"auth\": {\n      \"type\": \"oauth\",\n",
+            "contextAfter": "\n      \"requiredScopes\": [\n        \"crm.objects.contacts.read\",\n        \"crm.objects.contacts.write\"\n      ],\n      \"optionalScopes\": [],\n      \"conditionallyRequiredScopes\": []\n    },\n    \"permittedUrls\": {\n      \"fetch\": [\"https://api.hubapi.com\"],\n      \"iframe\": [],\n      \"img\": []\n    },\n    \"support\": {\n      \"supportEmail\": \"support@example.com\",\n    ",
+            "sectionHeading": "### Set up OAuth (if applicable)",
+            "startOffset": 8424,
+            "endOffset": 8487,
+            "clipped": false
+          }
+        ]
+      }
+    },
+    {
+      "title": "Retrieve App Client ID and Secret",
+      "description": "Open your project details page in HubSpot by running `hs project open` in your terminal and navigating to your app components to locate your client ID and client secret.",
+      "expectedOutcome": "You obtain the confidential client ID and client secret required for backend authentication.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-b360a5fa755c5bf4"
+        ],
+        "qualification": "Set up your backend OAuth server to use your app's client ID and secret found in HubSpot.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-bc89a1ee9e4aabe15eb55e59",
+            "sourceId": "source-b360a5fa755c5bf4",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+            "sourceTitle": "Create a new app using the CLI",
+            "quote": "If you configured the [authentication type](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/app-configuration.md#authentication) to use `oauth`, you'll need to set up your backend OAuth server to use your app's client ID and secret, which you can find in HubSpot:",
+            "contextBefore": " CLI command to upload your project to your HubSpot account and automatically trigger a new build.\n\nIf your app is configured to use OAuth authentication, proceed to the next step to retrieve the app's authentication details. Otherwise, you can proceed to [app installation](#install-your-app).\n\n## Add the client ID and client secret of your app to your app\n\n",
+            "contextAfter": "\n\n* In the terminal, run `hs project open` from within your local project directory to open the project details page in HubSpot.\n* Under *Project Components*, click the **name** of your app.\n\n![Screenshot of the app name shown on the project details page](https://developers.hubspot.com/hubfs/Knowledge_Base_2023-24-25/developer/project-details-page-app-name.p",
+            "sectionHeading": "## Add the client ID and client secret of your app to your app",
+            "startOffset": 9465,
+            "endOffset": 9751,
+            "clipped": false
+          }
+        ]
+      }
+    },
+    {
+      "title": "Construct the Authorization URL",
+      "description": "On your backend server, build the authorization URL pointing to `https://app.hubspot.com/oauth/authorize` including query parameters for `client_id`, `redirect_uri`, and requested `scope`.",
+      "expectedOutcome": "Users can be directed to HubSpot to review permissions and authorize the app.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-dc7408e03f260887",
+          "source-97a278ade1944830"
+        ],
+        "qualification": "Construct the authorization URL with client_id, scope, and redirect_uri parameters.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-deac1fcb6a66f0f731e33769",
+            "sourceId": "source-dc7408e03f260887",
+            "sourceUrl": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+            "sourceTitle": "Manage OAuth access tokens using the v3 APIs",
+            "quote": "After you create your app, a user can install it into their HubSpot account using the install URL located in your [app's settings](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/manage-apps-in-hubspot.md), which will include the `client_id`, `redirect_uri`, and `scopes` as query parameters. You may also include `optional_scopes` and `state`, if needed.",
+            "contextBefore": "to generate a new access token after the previous one expires.\n\nCheck out the blog post linked below for guidance on how to cache and auto-refresh access tokens:\n\n> [card] [Blog Post: Production-Ready OAuth Token Management](https://developers.hubspot.com/blog/oauth-token-management-hubspot-integrations#token-caching-auto-refresh)\n\n## Initiate OAuth access\n\n",
+            "contextAfter": "\n\nFor example, the Node.js code block below demonstrates how to construct this authorization URL:\n\n```js theme={null}\nconst authorizationUrl =\n  'https://app.hubspot.com/oauth/authorize' +\n  `?client_id=${encodeURIComponent(CLIENT_ID)}` + // app's client ID\n  `&scope=${encodeURIComponent(SCOPES)}` + // scopes being requested by the app\n  `&redirect_uri=${enc",
+            "sectionHeading": "## Initiate OAuth access",
+            "startOffset": 2673,
+            "endOffset": 3051,
+            "clipped": false
+          },
+          {
+            "evidenceId": "evidence-65ca2e8a0ab56b225197f084",
+            "sourceId": "source-97a278ade1944830",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide.md",
+            "sourceTitle": "OAuth Quickstart Guide",
+            "quote": "When sending a user to HubSpot's OAuth 2.0 server, the first step is creating the authorization URL. This will identify your app and define the resources (scopes) it's requesting access to on behalf of the user. The query parameters you can pass as part of an authorization URL are shown in the table below. For more detailed information on this step, read the [reference",
+            "contextBefore": "tarted using OAuth 2.0 as quickly as possible by demonstrating all the steps outlined below in the [getting OAuth tokens section](#getting-oauth-tokens) below.\n\n> [card] [Get the quickstart app](https://github.com/HubSpot/oauth-quickstart-nodejs)\n\n## Getting OAuth tokens\n\n### 1. Create the authorization URL and direct the user to HubSpot's OAuth 2.0 server\n\n",
+            "contextAfter": " doc](https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/working-with-oauth.md).\n\nFields marked with \\* are required.\n\n| Parameter | Description | Example |\n| - | - | - |\n| `client_id`\\* | The client ID identifies your app. Find it on your app's settings page. | `7fff1e36-2d40-4ae1-bbb1-5266d59564fb` |\n| `scope`\\* | T",
+            "sectionHeading": "### 1. Create the authorization URL and direct the user to HubSpot's OAuth 2.0 server",
+            "startOffset": 2883,
+            "endOffset": 3254,
+            "clipped": true
+          }
+        ]
+      }
+    },
+    {
+      "title": "Handle the OAuth Redirect Callback",
+      "description": "Configure your server route (such as `/oauth-callback`) to capture the temporary authorization `code` query parameter sent by HubSpot after a user successfully approves the installation.",
+      "expectedOutcome": "Your application receives the single-use authorization code from the redirect query string.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-dc7408e03f260887",
+          "source-97a278ade1944830"
+        ],
+        "qualification": "The redirect URL will be appended with a code query parameter to handle the received code.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-4611ee3b51cbb94253b88d5b",
+            "sourceId": "source-dc7408e03f260887",
+            "sourceUrl": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+            "sourceTitle": "Manage OAuth access tokens using the v3 APIs",
+            "quote": "After a user authorizes your app and installs it into their account, the redirect URL will be appended with a `code` query parameter, which you can use to [generate an access token and a refresh token](#generate-initial-access-and-refresh-tokens). The access token will be used to authenticate requests that your app makes, while the refresh token will be used to get a new access token when the",
+            "contextBefore": "ation URL:\n\n```js theme={null}\nconst authorizationUrl =\n  'https://app.hubspot.com/oauth/authorize' +\n  `?client_id=${encodeURIComponent(CLIENT_ID)}` + // app's client ID\n  `&scope=${encodeURIComponent(SCOPES)}` + // scopes being requested by the app\n  `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`; // where to send the user after the consent page\n```\n\n",
+            "contextAfter": " current one expires.\n\n## Generate initial access and refresh tokens\n\nAfter a user authorizes your app, the response will include a `code` value as a query parameter. Using this code, you'll generate the initial access token and refresh token. Access tokens are short-lived (30 minutes), and you can check the `expires_in` parameter when generating an access t",
+            "sectionHeading": "## Initiate OAuth access",
+            "startOffset": 3498,
+            "endOffset": 3893,
+            "clipped": true
+          },
+          {
+            "evidenceId": "evidence-4db85e159021ff9acb46335d",
+            "sourceId": "source-97a278ade1944830",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide.md",
+            "sourceTitle": "OAuth Quickstart Guide",
+            "quote": "app.get(\"/oauth-callback\", async (req, res) => {",
+            "contextBefore": "rom Step 2, the OAuth 2.0 server sends a `GET` request to the redirect URI specified in your authentication URL. If there are no issues and the user approves the access request, the request to the redirect URI will be returned with a `code` query parameter attached. If the user doesn't grant access, no request will be sent.\n\n**Example:**\n\n```js theme={null}\n",
+            "contextAfter": "\n  if (req.query.code) {\n    // Handle the received code\n  }\n});\n```\n\n### 4. Exchange authorization code for tokens\n\nAfter your app receives an authorization code from the OAuth 2.0 server, it can exchange that code for an access and refresh token by sending a URL-form encoded `POST` request to `https://api.hubapi.com/oauth/v3/token` with the values shown be",
+            "sectionHeading": "### 3. Handle the OAuth server response",
+            "startOffset": 7337,
+            "endOffset": 7385,
+            "clipped": false
+          }
+        ]
+      }
+    },
+    {
+      "title": "Exchange Authorization Code for Tokens",
+      "description": "Send a URL-form encoded `POST` request from your backend to `https://api.hubapi.com/oauth/v3/token` containing `client_id`, `client_secret`, `code`, `redirect_uri`, and `grant_type=authorization_code`.",
+      "expectedOutcome": "HubSpot returns a short-lived access token (30-minute expiry) and a long-lived refresh token.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-dc7408e03f260887"
+        ],
+        "qualification": "Make a URL-form encoded POST request to /oauth/v3/token to get OAuth access and refresh tokens.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-3ae9f630ec8b5f383c9cdf88",
+            "sourceId": "source-dc7408e03f260887",
+            "sourceUrl": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+            "sourceTitle": "Manage OAuth access tokens using the v3 APIs",
+            "quote": "To get OAuth access and refresh tokens, make a URL-form encoded `POST` request to `/oauth/v3/token`. In the request body, you'll specify various auth parameters, such as `client_id` and `client_secret`, along with the `code` passed back through the redirect URL.",
+            "contextBefore": "ess and refresh tokens\n\nAfter a user authorizes your app, the response will include a `code` value as a query parameter. Using this code, you'll generate the initial access token and refresh token. Access tokens are short-lived (30 minutes), and you can check the `expires_in` parameter when generating an access token to determine its lifetime (in seconds).\n\n",
+            "contextAfter": "\n\nFor example, your request may look similar to the following:\n\n```shell theme={null}\ncurl --request POST \\\n  --url https://api.hubspot.com/oauth/v3/token \\\n  --header 'content-type: application/x-www-form-urlencoded' \\\n  --data client_id=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee \\\n  --data client_secret=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee \\\n  --data code=na1-aa",
+            "sectionHeading": "## Generate initial access and refresh tokens",
+            "startOffset": 4299,
+            "endOffset": 4561,
+            "clipped": false
+          },
+          {
+            "evidenceId": "evidence-af7bdad7f40e50ceae8c5600",
+            "sourceId": "source-dc7408e03f260887",
+            "sourceUrl": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+            "sourceTitle": "Manage OAuth access tokens using the v3 APIs",
+            "quote": "  --data redirect_uri=http://localhost:3000/oauth-callback",
+            "contextBefore": "heme={null}\ncurl --request POST \\\n  --url https://api.hubspot.com/oauth/v3/token \\\n  --header 'content-type: application/x-www-form-urlencoded' \\\n  --data client_id=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee \\\n  --data client_secret=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee \\\n  --data code=na1-aaaa-bbbb-cccc-dddd-eeeeeeeeeeee \\\n  --data grant_type=authorization_code \\\n",
+            "contextAfter": "\n```\n\n| Parameter | Type | Description |\n| - | - | - |\n| `grant_type` | String | Must be `authorization_code` for the request to generate initial access and refresh tokens. |\n| `code` | String | The `code` returned in the redirect URL after the user installs the app. |\n| `redirect_uri` | String | The app's set redirect URL. |\n| `client_id` | String | The app",
+            "sectionHeading": "## Generate initial access and refresh tokens",
+            "startOffset": 4995,
+            "endOffset": 5053,
+            "clipped": false
+          }
+        ]
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "name": "crm.objects.contacts.read",
+      "purpose": "Grants read access to CRM contact objects.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-b360a5fa755c5bf4"
+        ],
+        "qualification": "Included as a required scope in the example app configuration.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-171c512679cbb36c0a3ea10a",
+            "sourceId": "source-b360a5fa755c5bf4",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+            "sourceTitle": "Create a new app using the CLI",
+            "quote": "      \"redirectUrls\": [\"http://localhost:3000/oauth-callback\"],",
+            "contextBefore": "e code block below).\n\n```json lines Highlight={2} title=\"Example app-hsmeta.json\" theme={null}\n{\n  \"uid\": \"new_developer_platform_app\",\n  \"type\": \"app\",\n  \"config\": {\n    \"description\": \"An example to demonstrate how to build an app with developer projects.\",\n    \"name\": \"my first app\",\n    \"distribution\": \"marketplace\",\n    \"auth\": {\n      \"type\": \"oauth\",\n",
+            "contextAfter": "\n      \"requiredScopes\": [\n        \"crm.objects.contacts.read\",\n        \"crm.objects.contacts.write\"\n      ],\n      \"optionalScopes\": [],\n      \"conditionallyRequiredScopes\": []\n    },\n    \"permittedUrls\": {\n      \"fetch\": [\"https://api.hubapi.com\"],\n      \"iframe\": [],\n      \"img\": []\n    },\n    \"support\": {\n      \"supportEmail\": \"support@example.com\",\n    ",
+            "sectionHeading": "### Configure UIDs and initial app features",
+            "startOffset": 6130,
+            "endOffset": 6193,
+            "clipped": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "crm.objects.contacts.write",
+      "purpose": "Grants write access to create or modify CRM contact objects.",
+      "evidence": {
+        "status": "documented",
+        "sourceIds": [
+          "source-b360a5fa755c5bf4"
+        ],
+        "qualification": "Included as a required scope in the example app configuration.",
+        "quotations": [
+          {
+            "evidenceId": "evidence-171c512679cbb36c0a3ea10a",
+            "sourceId": "source-b360a5fa755c5bf4",
+            "sourceUrl": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+            "sourceTitle": "Create a new app using the CLI",
+            "quote": "      \"redirectUrls\": [\"http://localhost:3000/oauth-callback\"],",
+            "contextBefore": "e code block below).\n\n```json lines Highlight={2} title=\"Example app-hsmeta.json\" theme={null}\n{\n  \"uid\": \"new_developer_platform_app\",\n  \"type\": \"app\",\n  \"config\": {\n    \"description\": \"An example to demonstrate how to build an app with developer projects.\",\n    \"name\": \"my first app\",\n    \"distribution\": \"marketplace\",\n    \"auth\": {\n      \"type\": \"oauth\",\n",
+            "contextAfter": "\n      \"requiredScopes\": [\n        \"crm.objects.contacts.read\",\n        \"crm.objects.contacts.write\"\n      ],\n      \"optionalScopes\": [],\n      \"conditionallyRequiredScopes\": []\n    },\n    \"permittedUrls\": {\n      \"fetch\": [\"https://api.hubapi.com\"],\n      \"iframe\": [],\n      \"img\": []\n    },\n    \"support\": {\n      \"supportEmail\": \"support@example.com\",\n    ",
+            "sectionHeading": "### Configure UIDs and initial app features",
+            "startOffset": 6130,
+            "endOffset": 6193,
+            "clipped": false
+          }
+        ]
+      }
+    }
+  ],
+  "approval": [
+    {
+      "text": "Approval requirements and waiting time could not be established from the retrieved documentation.",
+      "evidence": {
+        "status": "unknown",
+        "sourceIds": [],
+        "qualification": "The retrieved excerpts do not establish approval or review requirements or a timeline; confirm these with the provider."
+      }
+    }
+  ],
+  "blockers": [
+    {
+      "issue": "Recovery details not established",
+      "action": "Consult HubSpot developer support or documentation if token exchange fails or redirect validation errors occur.",
+      "evidence": {
+        "status": "unknown",
+        "sourceIds": [],
+        "qualification": "Specific error recovery instructions were not present in the provided documentation."
+      }
+    }
+  ],
+  "responsibilities": {
+    "agent": [
+      {
+        "text": "Assist the developer by structuring configuration files and writing backend request handlers for token exchange based on retrieved excerpts.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Editorial recommendation for AI agent assistance."
+        }
+      }
+    ],
+    "developer": [
+      {
+        "text": "Securely store the app client secret on the backend, host a secure redirect endpoint, and implement token caching and auto-refresh mechanisms.",
+        "evidence": {
+          "status": "estimated",
+          "sourceIds": [],
+          "qualification": "Editorial recommendation for developer implementation duties."
+        }
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "source-dc7408e03f260887",
+      "title": "Manage OAuth access tokens using the v3 APIs",
+      "url": "https://developers.hubspot.com/docs/api-reference/legacy/authentication/manage-oauth-tokens",
+      "inspectedAt": "2026-11-03"
+    },
+    {
+      "id": "source-b360a5fa755c5bf4",
+      "title": "Create a new app using the CLI",
+      "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/create-an-app.md",
+      "inspectedAt": "2026-11-03"
+    },
+    {
+      "id": "source-59f95527651dac3e",
+      "title": "App configuration",
+      "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/app-configuration.md",
+      "inspectedAt": "2026-11-03"
+    },
+    {
+      "id": "source-1876a2b7bb2849dd",
+      "title": "Authentication overview",
+      "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/overview",
+      "inspectedAt": "2026-11-03"
+    },
+    {
+      "id": "source-97a278ade1944830",
+      "title": "OAuth Quickstart Guide",
+      "url": "https://developers.hubspot.com/docs/apps/developer-platform/build-apps/authentication/oauth/oauth-quickstart-guide.md",
+      "inspectedAt": "2026-11-03"
+    }
+  ],
+  "nextActions": [
+    {
+      "text": "Set up your local project structure using the HubSpot CLI and configure your authentication options in `app-hsmeta.json`.",
+      "evidence": {
+        "status": "estimated",
+        "sourceIds": [
+          "source-1876a2b7bb2849dd",
+          "source-b360a5fa755c5bf4"
+        ],
+        "qualification": "Recommended next step based on setup workflow."
+      }
+    }
+  ]
+}
