@@ -1,3 +1,4 @@
+import {openRecovery,signRecovery,recoveryView,type RecoveryState} from '../generation/recovery';
 import type {GuideStore} from '../storage/file-guide-store';
 import {providerFailureLog,type ProviderFailureLog} from '../generation/provider-diagnostics';
 import {createHash,randomUUID} from 'node:crypto';
@@ -13,6 +14,8 @@ export interface GenerateDependencies {
   enabled():boolean;
   configured():boolean;
   now?:()=>number;
+  recoverySecret?:()=>string;
+  continueGenerate?:(state:RecoveryState,context:{requestId:string})=>Promise<GenerationResult>;
   storage?:GuideStore;
   logGenerationFailure?:(event:ProviderFailureLog)=>void;
   logValidationFailure?:(event:ValidationLog)=>void;
@@ -20,13 +23,13 @@ export interface GenerateDependencies {
 const BODY_LIMIT=2048;
 function response(status:number,body:unknown,retryAfter?:number){return Response.json(body,{status,headers:{'Cache-Control':'no-store',...(retryAfter?{'Retry-After':String(retryAfter)}:{})}});}
 function failure(status:number,code:string,message:string,nextAction:string,retryAfter?:number){return response(status,{ok:false,status:'failed',error:{code,message,nextAction}},retryAfter);}
-export async function readBody(request:Request):Promise<unknown>{
-  if(Number(request.headers.get('content-length'))>BODY_LIMIT)throw new Error('body-too-large');
+export async function readBody(request:Request,maxBytes=BODY_LIMIT):Promise<unknown>{
+  if(Number(request.headers.get('content-length'))>maxBytes)throw new Error('body-too-large');
   if(!request.body)throw new Error('invalid-json');
   const reader=request.body.getReader();let size=0;const chunks:Uint8Array[]=[];
   try {
     const text=await bounded((async()=>{
-      while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>BODY_LIMIT)throw new Error('body-too-large');chunks.push(value);}
+      while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>maxBytes)throw new Error('body-too-large');chunks.push(value);}
       return Buffer.concat(chunks).toString('utf8');
     })(),5000);
     try{return JSON.parse(text);}catch{throw new Error('invalid-json');}
@@ -72,42 +75,15 @@ export function sameOrigin(request:Request):boolean {
 export function createGenerateHandler(deps:GenerateDependencies){
   let active=false;let lastStarted:number|undefined;let attempts:number[]=[];
   const now=deps.now??Date.now;
-  async function handle(request:Request,requestId:string):Promise<Response>{
-    if(!sameOrigin(request))return failure(403,'cross-origin','Cross-origin generation requests are not allowed.','Submit from the same origin.');
-    if(!/^application\/json(?:\s*;|$)/i.test(request.headers.get('content-type')||''))return failure(415,'unsupported-media-type','Send an application/json request.','Use Content-Type: application/json.');
-    let input:ResearchInput;
-    try{input=inputOf(await readBody(request));}catch(error){
-      const kind=error instanceof Error?error.message:'';
-      if(kind==='body-too-large')return failure(413,kind,'Request body exceeds 2048 bytes.','Send only provider and/or website.');
-      if(kind==='Request timed out')return failure(408,'request-timeout','Request body was not received in time.','Submit a complete small JSON body.');
-      return failure(400,'invalid-input','Provide a provider name (up to 100 characters) and/or a public HTTPS official website (up to 1024 characters).','Send only provider and/or website. URLs must not contain credentials, queries, IP addresses or custom ports.');
-    }
-    if(!deps.enabled())return failure(503,'generation-disabled','Live generation is disabled. No research or Gemini request was made.','For deliberate local live use, enable GUIDE_GENERATION_ENABLED after confirming billing remains disabled.');
-    if(!deps.configured())return failure(503,'generation-unavailable','Server generation configuration is unavailable.','Configure the server-side Gemini key; never include credentials in the request.');
-    const started=now();attempts=attempts.filter(t=>started-t<3600000);
-    if(active)return failure(429,'busy','A research/generation request is already running.','Wait for it to finish; no automatic retry is performed.',60);
-    const retryAfter=lastStarted===undefined?0:Math.ceil((60000-(started-lastStarted))/1000);
-    if(retryAfter>0||attempts.length>=5)return failure(429,'request-limit','Local generation request limit reached.','Wait before submitting again; limits are shared across this server process.',retryAfter>0?retryAfter:Math.max(1,Math.ceil((attempts[0]+3600000-started)/1000)));
-    active=true;lastStarted=started;attempts.push(started);
-    try{
-      if(deps.storage){try{await deps.storage.ready();}catch{return failure(503,'storage-unavailable','Persistent guide storage is unavailable. No research or Gemini request was made.','Check the persistent storage directory and deployment configuration.');}}
-      const research=await deps.research(input);
-      if(research.status==='website-required')return failure(422,'official-website-required','An official provider website could not be established.','Supply the official developer documentation website.');
-      if(!research.pages.length){
-        const timedOut=research.failures.some(f=>/timed?\s*out|time budget/i.test(f.reason));
-        return failure(timedOut?504:424,timedOut?'research-timeout':'documentation-unavailable',timedOut?'Documentation retrieval timed out.':'No usable public documentation was retrieved.','Supply a more specific official OAuth documentation URL. Access restrictions are respected.');
-      }
-      const provider=input.provider??domainOf(safeUrl(research.website!));
-      const slug=provider.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80).replace(/-$/,'')||`provider-${createHash('sha256').update(provider).digest('hex').slice(0,12)}`;
-      const generationInput={provider,slug,research};
-      // Fail before incurring a Gemini request if research lacks usable OAuth provenance.
-      try{prepareGeneration(generationInput);}catch{return failure(424,'insufficient-documentation','Retrieved material lacks usable, provenance-backed OAuth evidence.','Supply a more specific official OAuth documentation URL.');}
-      const result=await deps.generate(generationInput,{requestId});
+  async function finalize(result:GenerationResult,requestId:string,research?:ResearchResult):Promise<Response>{
       if(!result.ok){
         if(result.error==='invalid-guide'){
           const event=validationLog(requestId,result.diagnostic);
           // Logging failure must never change the safe response or trigger retries.
           try{if(deps.logValidationFailure)deps.logValidationFailure(event);else process.stderr.write('[oauth-guide-validation] '+JSON.stringify(event)+'\n');}catch{}
+        }
+        if(result.partial&&deps.recoverySecret){
+          try{const token=signRecovery(result.partial,deps.recoverySecret());return response(202,{ok:true,status:'partial-draft',partial:recoveryView(result.partial,token)});}catch{/* Never expose partials if authenticated checkpoint construction fails. */}
         }
         const errors:Record<typeof result.error,[number,string,string]>={
           'missing-key':[503,'generation-unavailable','Server generation configuration is unavailable.'],
@@ -128,7 +104,49 @@ export function createGenerateHandler(deps:GenerateDependencies){
       }
       let saved;
       if(deps.storage){try{const record=await deps.storage.save(result);saved={id:record.id,path:`/guides/${record.id}`,createdAt:record.createdAt};}catch{return failure(503,'guide-save-failed','Generation completed but the guide could not be saved. No share link was created.','Check persistent storage before another deliberate generation request; nothing is retried automatically.');}}
-      return response(200,{...(saved?{saved}:{}),ok:true,status:'generated-draft',reviewStatus:'not-human-reviewed',oauthTestStatus:'not-tested',oauthTestLabel:'Not end-to-end tested',guide:result.guide,sources:result.sources,evidence:result.support,lastResearchedAt:result.guide.lastResearchedAt,warnings:result.warnings,research:{status:research.status,requestCount:research.requestCount,missingTopics:research.missingTopics},model:result.model});
+      return response(200,{...(saved?{saved}:{}),ok:true,status:'generated-draft',reviewStatus:'not-human-reviewed',oauthTestStatus:'not-tested',oauthTestLabel:'Not end-to-end tested',guide:result.guide,sources:result.sources,evidence:result.support,lastResearchedAt:result.guide.lastResearchedAt,warnings:result.warnings,...(research?{research:{status:research.status,requestCount:research.requestCount,missingTopics:research.missingTopics}}:{}),model:result.model});
+  }
+  async function handle(request:Request,requestId:string):Promise<Response>{
+    if(!sameOrigin(request))return failure(403,'cross-origin','Cross-origin generation requests are not allowed.','Submit from the same origin.');
+    if(!/^application\/json(?:\s*;|$)/i.test(request.headers.get('content-type')||''))return failure(415,'unsupported-media-type','Send an application/json request.','Use Content-Type: application/json.');
+    let input:ResearchInput|undefined;let recovery:RecoveryState|undefined;
+    try{
+      if(request.headers.get('x-guide-continuation')==='1'){
+        if(!deps.recoverySecret||!deps.continueGenerate)throw Error('recovery-unavailable');
+        const body=await readBody(request,1100000);if(!body||typeof body!=='object'||!('continuation' in body)||typeof body.continuation!=='string'||Object.keys(body).length!==1)throw Error('invalid-input');
+        recovery=openRecovery(body.continuation,deps.recoverySecret(),now());
+      }else input=inputOf(await readBody(request));
+    }catch(error){
+      const kind=error instanceof Error?error.message:'';
+      if(kind.startsWith('recovery-'))return failure(409,'partial-expired','The partial checkpoint expired or cannot be verified with the current configuration.','Displayed sections remain available. Start a new guide if the server key changed or the checkpoint expired.');
+      if(kind==='body-too-large')return failure(413,kind,request.headers.get('x-guide-continuation')==='1'?'Continuation checkpoint exceeds the size limit.':'Request body exceeds 2048 bytes.','Send only provider and/or website.');
+      if(kind==='Request timed out')return failure(408,'request-timeout','Request body was not received in time.','Submit a complete small JSON body.');
+      return failure(400,'invalid-input','Provide a provider name (up to 100 characters) and/or a public HTTPS official website (up to 1024 characters).','Send only provider and/or website. URLs must not contain credentials, queries, IP addresses or custom ports.');
+    }
+    if(!deps.enabled())return failure(503,'generation-disabled','Live generation is disabled. No research or Gemini request was made.','For deliberate local live use, enable GUIDE_GENERATION_ENABLED after confirming billing remains disabled.');
+    if(!deps.configured())return failure(503,'generation-unavailable','Server generation configuration is unavailable.','Configure the server-side Gemini key; never include credentials in the request.');
+    const started=now();attempts=attempts.filter(t=>started-t<3600000);
+    if(active)return failure(429,'busy','A research/generation request is already running.','Wait for it to finish; no automatic retry is performed.',60);
+    const retryAfter=lastStarted===undefined?0:Math.ceil((60000-(started-lastStarted))/1000);
+    if(retryAfter>0||attempts.length>=5)return failure(429,'request-limit','Local generation request limit reached.','Wait before submitting again; limits are shared across this server process.',retryAfter>0?retryAfter:Math.max(1,Math.ceil((attempts[0]+3600000-started)/1000)));
+    active=true;lastStarted=started;attempts.push(started);
+    try{
+      if(deps.storage){try{await deps.storage.ready();}catch{return failure(503,'storage-unavailable','Persistent guide storage is unavailable. No research or Gemini request was made.','Check the persistent storage directory and deployment configuration.');}}
+      if(recovery){const continued=await deps.continueGenerate!(recovery,{requestId});if(!continued.ok&&continued.error==='invalid-input')return failure(409,'partial-expired','This checkpoint cannot continue with the current model configuration.','Keep the displayed sections or start a new guide; no model request was made.');return await finalize(continued,requestId);}
+      if(!input)return failure(400,'invalid-input','Generation input is missing.','Enter a provider or resume saved partial progress.');
+      const research=await deps.research(input);
+      if(research.status==='website-required')return failure(422,'official-website-required','An official provider website could not be established.','Supply the official developer documentation website.');
+      if(!research.pages.length){
+        const timedOut=research.failures.some(f=>/timed?\s*out|time budget/i.test(f.reason));
+        return failure(timedOut?504:424,timedOut?'research-timeout':'documentation-unavailable',timedOut?'Documentation retrieval timed out.':'No usable public documentation was retrieved.','Supply a more specific official OAuth documentation URL. Access restrictions are respected.');
+      }
+      const provider=input.provider??domainOf(safeUrl(research.website!));
+      const slug=provider.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80).replace(/-$/,'')||`provider-${createHash('sha256').update(provider).digest('hex').slice(0,12)}`;
+      const generationInput={provider,slug,research};
+      // Fail before incurring a Gemini request if research lacks usable OAuth provenance.
+      try{prepareGeneration(generationInput);}catch{return failure(424,'insufficient-documentation','Retrieved material lacks usable, provenance-backed OAuth evidence.','Supply a more specific official OAuth documentation URL.');}
+      const result=await deps.generate(generationInput,{requestId});
+      return await finalize(result,requestId,research);
     }catch{return failure(502,'pipeline-failed','The research/generation pipeline could not complete the request.','No automatic retry is performed. Check server configuration or try a specific official documentation URL.');}
     finally{active=false;}
   }

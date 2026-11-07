@@ -32,7 +32,7 @@ export function assertProviderSources(provider:string,domain:string,sources:Inpu
  const mentioned=!!pattern&&sources.some(s=>new RegExp(`(?<![\\p{L}\\p{N}])${pattern}(?![\\p{L}\\p{N}])`,'iu').test(s.title+'\n'+s.text));
  if(normalized(provider)!==normalized(domain)&&normalized(provider)!==normalized(domainName)&&!mentioned)mismatch('sources');
 }
-export function assertGuideIdentity(guide:OAuthGuide,input:PreparedInput):void{
+export function assertGuideIdentity(guide:Pick<OAuthGuide,'slug'|'name'|'lastResearchedAt'|'summary'|'steps'>,input:PreparedInput):void{
  if(guide.slug!==input.slug||!sameProviderName(guide.name,input.provider)||guide.lastResearchedAt!==input.researchedAt)throw new GuideValidationError('guide-rules','guide-identity-mismatch','Generated identity or research date changed',guide.slug!==input.slug?'slug':!sameProviderName(guide.name,input.provider)?'name':'lastResearchedAt');
  assertProviderSources(input.provider,input.providerDomain,input.sources,input.delegatedSourceUrls);
  // Reject explicit foreign-provider setup actions even if the title was copied

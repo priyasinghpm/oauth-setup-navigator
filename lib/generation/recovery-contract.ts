@@ -1,0 +1,5 @@
+import type {OAuthGuide} from '../types';
+export const RECOVERY_FIELDS={overview:['summary','difficulty','setupEstimate'],prerequisites:['prerequisites'],steps:['steps'],scopes:['scopes'],approval:['approvalSummary','approvalWaitingTime','approval'],blockers:['blockers'],responsibilities:['responsibilities'],nextActions:['nextActions']} as const;
+export type RecoveryKey=keyof typeof RECOVERY_FIELDS;
+export const RECOVERY_TITLES:Record<RecoveryKey,string>={overview:'Overview and effort',prerequisites:'Before you begin',steps:'Setup instructions',scopes:'Scopes and permissions',approval:'Approval and waiting time',blockers:'Troubleshooting',responsibilities:'Agent and developer responsibilities',nextActions:'Next actions and gaps'};
+export interface RecoveryView {token:string;provider:string;researchDate:string;sections:{key:RecoveryKey;title:string;content:Partial<OAuthGuide>}[];sources:OAuthGuide['sources'];pending:RecoveryKey[];canContinue:boolean;reviewStatus:'not-human-reviewed';oauthTestStatus:'not-tested'}

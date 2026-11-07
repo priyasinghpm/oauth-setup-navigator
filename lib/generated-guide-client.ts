@@ -1,7 +1,9 @@
+import {parseRecoveryView} from './recovery-client';
+import type {RecoveryView} from './generation/recovery-contract';
 import {parseGuides} from './validate-guides';
 import type {OAuthGuide} from './types';
 export interface SavedGuideLink {id:string;path:string;createdAt:string}
-export interface GenerateInput {provider?:string;website?:string}
+export interface GenerateInput {provider?:string;website?:string;continuation?:string}
 const errorMessages:Record<string,string>={
  'access-required':'Your generation access expired. Refresh the page and enter the shared access code.',
  'access-unavailable':'Generation access is not configured. Contact the demo owner.',
@@ -21,18 +23,20 @@ const errorMessages:Record<string,string>={
  'gemini-quota':'The model is busy or its free-tier quota is exhausted. Wait and check the quota; no paid fallback is used.',
  'guide-validation-failed':'The generated guide failed schema or evidence validation and was not displayed. More complete official documentation may help.',
  'invalid-output':'The model returned invalid structured output. No guide was accepted or automatically retried.',
+ 'partial-expired':'This partial checkpoint expired or its server configuration changed. Your displayed sections remain available, but start a new guide to continue.',
  'invalid-input':'Enter a provider name and/or public HTTPS official documentation URL, without credentials or query parameters.',
 };
 function record(v:unknown):v is Record<string,unknown>{return typeof v==='object'&&v!==null&&!Array.isArray(v);}
-export async function requestGeneratedGuide(input:GenerateInput,signal:AbortSignal,fetcher:typeof fetch=fetch):Promise<{guide:OAuthGuide;saved:SavedGuideLink|null}>{
+export async function requestGeneratedGuide(input:GenerateInput,signal:AbortSignal,fetcher:typeof fetch=fetch):Promise<{guide:OAuthGuide;saved:SavedGuideLink|null;partial?:never}|{partial:RecoveryView;guide?:never;saved?:never}>{
  let response:Response;
- try{response=await fetcher('/api/guides/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input),signal,cache:'no-store'});}catch{throw new Error('The request could not complete. Check your connection. No automatic retry was made.');}
+ try{response=await fetcher('/api/guides/generate',{method:'POST',headers:{'Content-Type':'application/json',...(input.continuation?{'X-Guide-Continuation':'1'}:{})},body:JSON.stringify(input),signal,cache:'no-store'});}catch{throw new Error('The request could not complete. Check your connection. No automatic retry was made.');}
  let body:unknown;try{body=await response.json();}catch{throw new Error('The server returned an unreadable response. No guide was displayed.');}
  if(!response.ok||!record(body)||body.ok!==true){
    const code=record(body)&&record(body.error)&&typeof body.error.code==='string'?body.error.code:'';
    throw new Error(errorMessages[code]??'The guide could not be generated. No automatic retry or fallback was used. Check the official documentation URL and server configuration.');
  }
  try{
+   if(body.status==='partial-draft')return {partial:parseRecoveryView(body.partial)};
    if(body.status!=='generated-draft'||body.reviewStatus!=='not-human-reviewed'||body.oauthTestStatus!=='not-tested'||!record(body.guide)||!Array.isArray(body.guide.sources))throw new Error();
    const urls=new Set(body.guide.sources.map(source=>{if(!record(source)||typeof source.url!=='string')throw new Error();return source.url;}));
    const guide=parseGuides([body.guide],{allowedSourceUrls:urls})[0];

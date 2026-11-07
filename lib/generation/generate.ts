@@ -1,3 +1,4 @@
+import {recoverSections} from './recovery';
 import {lifecycleWarnings} from './evidence-quality';
 import {classifyProviderError,sanitizeProviderDiagnostic} from './provider-diagnostics';
 import {validationDiagnostic} from './diagnostics';
@@ -40,5 +41,5 @@ export async function generateWithTransport(input: GenerationInput, transport: M
   try {
     const {guide,support}=validateGeneratedGuide(parsed,prepared);
     return {ok:true,guide,support,sources:prepared.sources.map(({text,originalText,excerpts,...source})=>source),warnings:[...prepared.warnings,...lifecycleWarnings(guide,prepared),...(prepared.reviewEvidenceMissing?['Approval/review requirements were absent from the retrieved evidence and must remain unknown.']:[]),...(prepared.approvalTimingMissing?['No source-backed approval duration was established.']:[])],model:expectedModel,realRequestCount,jsonValid:true,schemaValid:true};
-  }catch(error){return {...fail('invalid-guide',error instanceof Error?error.message:'Generated guide failed schema/provenance validation.'),diagnostic:validationDiagnostic(error,prepared,parsed)};}
+  }catch(error){return {...fail('invalid-guide',error instanceof Error?error.message:'Generated guide failed schema/provenance validation.'),diagnostic:validationDiagnostic(error,prepared,parsed),partial:recoverSections(parsed,prepared,expectedModel)};}
 }

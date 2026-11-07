@@ -34,10 +34,12 @@ Restart the server. Enter a provider and preferably its official OAuth documenta
 
 | Mode | Where | Behavior |
 | --- | --- | --- |
-| Standard | Homepage, local or Vercel | One generation request; saves the complete guide after validation. No worker needed. |
+| Standard | Homepage, local or Vercel | Generates a complete guide; if validation fails, shows accepted sections with an explicit continuation action. No worker needed. |
 | Queue/resume | `/generate/stepwise`, **local only** | Run `npm run worker:guides` in a second terminal. Saves validated sections; failed sections require an explicit retry. |
 
 **Hosted queue support is outside the take-home scope.** Jobs require persistent local disk and a running worker; Supabase stores completed guides, not job checkpoints. Queueing does not prevent Gemini outages.
+
+Partial progress stays in the same browser tab across refreshes, with a signed two-hour checkpoint. **Continue remaining sections** makes one request for the next missing section, reusing evidence; no research or retry runs automatically. Only a completely validated guide is saved for sharing. Closing the tab loses partial progress; expired checkpoints and previously discarded responses cannot be resumed.
 
 Saved guides open at `/guides/<UUID>` and can be reopened without Gemini. Local storage defaults to `.local/generated-guides/`; the deployed app uses Supabase. Copy Link uses the current origin, so localhost links are not public links.
 

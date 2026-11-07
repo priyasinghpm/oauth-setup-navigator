@@ -15,7 +15,7 @@ Start with the [README](../README.md). This page contains optional deployment an
 4. Restart the web server after editing configuration.
 5. On the homepage, enter a provider name and preferably its official OAuth developer documentation URL. Click **Generate Guide** once.
 
-The normal flow retrieves documentation, makes one model request, validates evidence and saves the complete guide. It needs **only the web server**, not a background worker. Loading does not imply OAuth setup or approval was performed. Failed attempts are not retried automatically; no guide is returned if validation fails. Leaving the page does not provide resumable partial progress in this mode.
+The normal flow retrieves documentation, makes one model request, validates evidence and saves the complete guide. If full validation fails, independently validated sections can be returned as a partial draft. It needs **only the web server**, not a background worker. Loading does not imply OAuth setup or approval was performed. Failed attempts are not retried automatically. Invalid sections are withheld; accepted sections appear on the homepage. An explicit continuation requests one missing section using the original retained evidence, without research or a worker. A two-hour signed checkpoint is retained in sessionStorage, so refreshes in the same browser tab preserve partial progress. It is not a persistent or shareable guide until final full-guide validation and saving succeed. Closing the tab or clearing browser storage loses the checkpoint.
 
 The local single-request guard allows five requests per rolling hour per server process, with at least 60 seconds between requests; failed attempts can count. Gemini's quotas are separate. HTTP 503 means provider unavailability, and changing the UI or key does not guarantee recovery. No grounding, paid fallback or automatic model switching is configured.
 
@@ -125,3 +125,26 @@ to a small trusted group only. Generation limits also remain per-instance in the
 standard flow. Strong public abuse protection still needs shared limits or hosting
 access protection. Queue mode continues to require a local persistent worker and
 is not enabled for serverless hosting by this change.
+
+## Standard-flow partial recovery
+
+The same generation endpoint accepts a server-signed continuation checkpoint,
+with a larger bounded request body only for continuation requests. Normal
+provider inputs retain the existing 2 KB bound. The server authenticates and
+revalidates checkpoint evidence before any model call. PIN protection, the
+60-second cooldown and hourly request cap apply to continuation too.
+
+Only accepted section fields are included; failed model fields are discarded.
+Each explicit continuation generates one missing section, leaving accepted
+sections unchanged. A provider outage preserves the previous checkpoint.
+The assembled result must pass the unchanged complete-guide validator before
+storage. If combined validation still fails, sections remain partial; they are
+not presented as a completed guide. No citations or unknowns are silently fixed.
+
+The checkpoint contains public documentation evidence, not credentials, and is
+signed, not encrypted. It is held only in the browser, not in Supabase or the
+local queue. Signing uses server-only `GUIDE_RECOVERY_SECRET` (at least 32 bytes of random secret) if configured,
+otherwise `GEMINI_API_KEY`; rotating that key invalidates existing checkpoints.
+Changing the configured model does not automatically migrate partial state.
+A two-hour expiry cannot be extended by the browser. This adds request-driven
+recovery on Vercel, not a background worker or a hosted queue.

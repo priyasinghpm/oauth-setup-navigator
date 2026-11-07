@@ -1,3 +1,4 @@
+import type {RecoveryState} from './recovery';
 import type {ProviderDiagnostic} from './provider-diagnostics';
 import type {ValidationDiagnostic} from './diagnostics';
 import type { OAuthGuide, OfficialSource, OfficialQuotation } from '../types';
@@ -18,5 +19,5 @@ export type GenerationResult = {
   ok: true; guide: OAuthGuide; support: ClaimSupport[]; sources: Omit<InputSource,'text'|'originalText'|'excerpts'>[]; warnings: string[];
   model: string; realRequestCount: number; jsonValid: true; schemaValid: true;
 } | {
-  ok: false; error: GenerationError; message: string; sanitizedProviderError?: string; diagnostic?:ValidationDiagnostic; providerDiagnostic?:ProviderDiagnostic; realRequestCount: number; jsonValid: boolean; schemaValid: false;
+  ok: false; partial?:RecoveryState; error: GenerationError; message: string; sanitizedProviderError?: string; diagnostic?:ValidationDiagnostic; providerDiagnostic?:ProviderDiagnostic; realRequestCount: number; jsonValid: boolean; schemaValid: false;
 };
