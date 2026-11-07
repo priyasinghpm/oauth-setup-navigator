@@ -79,3 +79,35 @@ In the browser: search “Slack”, reset, open each static guide and copy its U
 ## Limitations
 
 This is a local take-home/demo, without authentication, database or deployment setup. File storage survives restarts only on persistent disk; ephemeral serverless storage does not provide durable public sharing. Generation is disabled by default. Do not expose generation publicly without authentication, abuse controls and a durable hosting/storage plan. No billing is enabled by the application.
+
+## Supabase saved-guide setup (optional, for deployment)
+
+1. In your Supabase project's SQL Editor, run [supabase/schema.sql](supabase/schema.sql).
+   It creates `generated_guides`, enables RLS and denies anonymous/signed-in direct access.
+2. Find your project URL and **server secret API key** in project settings. Add them
+   only to `.env.local` (or your hosting provider's server environment secrets):
+
+   ```dotenv
+   GUIDE_STORAGE_BACKEND=supabase
+   SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+   SUPABASE_SECRET_KEY=YOUR_SERVER_SECRET_KEY
+   ```
+
+   Never use a `NEXT_PUBLIC_` prefix or a browser/publishable key here. Legacy
+   `SUPABASE_SERVICE_ROLE_KEY` is supported as a fallback if no secret key is set.
+   Secret keys bypass RLS and must stay on the server.
+3. Restart Next.js. The standard flow saves validated guides in Supabase; reopening
+   `/guides/<UUID>` reads the same complete record without Gemini or research.
+   No existing local records are migrated or uploaded automatically. Switching back
+   to `GUIDE_STORAGE_BACKEND=file` exposes the local records again.
+4. Keep `GUIDE_GENERATION_ENABLED=false` while setting up hosting. Supabase setup
+   alone does not enable or test generation. Configure Vercel's server secrets with
+   the same names before deployment. Public generation still needs access controls
+   and shared rate limiting.
+
+The adapter uses Supabase REST with bounded reads, a 10-second timeout and no
+retries. Invalid configuration fails closed; it does not silently fall back to
+local disk. Queue checkpoints still require local persistent disk, so queue mode
+remains local. Supabase integration has offline mocked tests; your actual project
+connection and SQL must be verified separately. Free projects can pause after
+inactivity. No hosted data is modified by `npm test`.

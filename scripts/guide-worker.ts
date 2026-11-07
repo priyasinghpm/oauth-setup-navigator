@@ -9,7 +9,7 @@ import {jobStore} from '../lib/jobs/runtime';
 import {recoverInterrupted,runOneJobStep,takeWorkerQuota} from '../lib/jobs/worker';
 import {SECTION_LIMITS} from '../lib/jobs/sections';
 async function main(){
- try{const local=parseEnv(readFileSync('.env.local','utf8'));for(const key of ['GEMINI_API_KEY','GUIDE_GENERATION_ENABLED','GUIDE_JOB_DIR','GUIDE_STORAGE_DIR','GUIDE_MODEL_PROVIDER','GUIDE_MODEL'])if(process.env[key]===undefined&&local[key]!==undefined)process.env[key]=local[key];}catch{}
+ try{const local=parseEnv(readFileSync('.env.local','utf8'));for(const key of ['GEMINI_API_KEY','GUIDE_GENERATION_ENABLED','GUIDE_JOB_DIR','GUIDE_STORAGE_DIR','GUIDE_MODEL_PROVIDER','GUIDE_MODEL','GUIDE_STORAGE_BACKEND','SUPABASE_URL','SUPABASE_SECRET_KEY','SUPABASE_SERVICE_ROLE_KEY'])if(process.env[key]===undefined&&local[key]!==undefined)process.env[key]=local[key];}catch{}
  if(process.env.GUIDE_GENERATION_ENABLED!=='true'||!process.env.GEMINI_API_KEY){console.log('Worker disabled: explicitly enable GUIDE_GENERATION_ENABLED and configure the server key after confirming free-tier billing. No requests made.');return;}
  const store=jobStore();let stopping=false;process.once('SIGINT',()=>{stopping=true;});process.once('SIGTERM',()=>{stopping=true;});
  await store.lock('worker',async()=>{
