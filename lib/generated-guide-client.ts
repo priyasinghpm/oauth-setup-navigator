@@ -3,6 +3,8 @@ import type {OAuthGuide} from './types';
 export interface SavedGuideLink {id:string;path:string;createdAt:string}
 export interface GenerateInput {provider?:string;website?:string}
 const errorMessages:Record<string,string>={
+ 'access-required':'Your generation access expired. Refresh the page and enter the shared access code.',
+ 'access-unavailable':'Generation access is not configured. Contact the demo owner.',
  'cross-origin':'The page address does not match the API request origin. Open the navigator using the same host and port as the server, then submit again. No generation was started.',
  'storage-unavailable':'Persistent guide storage is unavailable. Check the local storage directory before generating; no Gemini request was made.',
  'guide-save-failed':'Generation completed but saving failed. Check persistent storage before generating again. No share link was created.',

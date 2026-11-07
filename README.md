@@ -123,3 +123,28 @@ The shared `/guides/[slug]` route renders at request time so UUID guide reads do
 not enter a static fallback. Static library content and URLs are unchanged, but
 those three pages also use request-time rendering. The check covers all three
 library routes and missing/invalid guide 404s; it does not create a saved record.
+
+## Temporary invited-tester access
+
+Set `GUIDE_ACCESS_PIN` to a random shared code of **12–128 characters** in Vercel's
+Production environment. Use a generated passphrase, not a short numeric PIN or an
+account password. Keep it server-side and share it privately with testers. Set
+`GEMINI_API_KEY` in Vercel server secrets too; never give that API key to visitors.
+Redeploy after changing environment values.
+
+Production generation fails closed if the access code is missing/too short.
+Local development remains ungated unless a code is configured. Unlocking sets an
+8-hour HTTP-only, SameSite=Strict cookie (Secure on HTTPS/Vercel). Rotating the code
+and redeploying invalidates previous access tokens. Unlocking does not itself
+start research or Gemini; `GUIDE_GENERATION_ENABLED` remains a separate opt-in.
+Both standard generation and queue APIs check access on the server. Static guides
+and saved UUID guide links remain public; this is a generation gate, not private
+storage or individual user accounts.
+
+The access endpoint permits five attempts per 15 minutes **per server instance**.
+This is a small-demo safeguard, not distributed brute-force protection; serverless
+instances/restarts do not share that counter. Use a high-entropy code and distribute
+to a small trusted group only. Generation limits also remain per-instance in the
+standard flow. Strong public abuse protection still needs shared limits or hosting
+access protection. Queue mode continues to require a local persistent worker and
+is not enabled for serverless hosting by this change.
