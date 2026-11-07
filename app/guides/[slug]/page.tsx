@@ -1,10 +1,11 @@
 import {resolveGuideRoute} from '@/lib/guide-route';
 import {CopyShareLink} from '@/components/copy-share-link';
 import {notFound} from 'next/navigation';
-import {guides} from '@/lib/guides';
 import {GuidePresentation} from '@/components/guide-presentation';
+// UUID guides read durable storage at request time. Avoid static fallback
+// rendering that turns connection() into DYNAMIC_SERVER_USAGE in production.
+export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
-export function generateStaticParams() { return guides.map(({ slug }) => ({ slug })); }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) { const result = await resolveGuideRoute((await params).slug); return { title: result ? `${result.guide.name} OAuth guide` : 'Guide not found',...(result?.saved?{robots:{index:false,follow:false}}:{}) }; }
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
   const result = await resolveGuideRoute((await params).slug); if (!result) notFound();

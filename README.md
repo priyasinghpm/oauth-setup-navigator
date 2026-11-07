@@ -111,3 +111,15 @@ local disk. Queue checkpoints still require local persistent disk, so queue mode
 remains local. Supabase integration has offline mocked tests; your actual project
 connection and SQL must be verified separately. Free projects can pause after
 inactivity. No hosted data is modified by `npm test`.
+
+Production guide-route regression check (no generation or writes): after building,
+start an isolated production server with `npm start -- --port 3002`, then run:
+
+```sh
+PRODUCTION_TEST_ORIGIN=http://127.0.0.1:3002 node --import tsx --test tests/production-guide-routes.test.ts
+```
+
+The shared `/guides/[slug]` route renders at request time so UUID guide reads do
+not enter a static fallback. Static library content and URLs are unchanged, but
+those three pages also use request-time rendering. The check covers all three
+library routes and missing/invalid guide 404s; it does not create a saved record.
